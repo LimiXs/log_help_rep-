@@ -1,0 +1,8 @@
+/.idea/
+/venv/
+venv
+/.git/
+**/__pycache__/
+django-admin
+**/.idea/
+*/.idea/
