@@ -1,1 +1,1 @@
-# log_help_rep-
+Django project for logistics management and assistance.
