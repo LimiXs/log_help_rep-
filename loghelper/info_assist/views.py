@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 
 
 # Create your views here.
@@ -7,8 +8,7 @@ def index(request):
     """
     View function for home page of site.
     """
-    return HttpResponse("<h1>Статьи по категориям</h1>")
-    # return render(request, 'info_assist/index.html')
+    return render(request, 'info_assist/index.html')
 
 
 def test(request):
