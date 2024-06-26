@@ -1,0 +1,48 @@
+body {
+    background-color: #f0f0f0; /* Light grey background for the entire page */
+    margin: 0;
+    font-family: Arial, sans-serif; /* Set a default font family */
+}
+
+ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: #f0f0f0; /* Light grey background for the menu */
+    padding: 10px; /* Add some padding to the menu */
+}
+
+li {
+    margin-right: 15px; /* Adjust spacing as needed */
+}
+
+li a {
+    display: block;
+    padding: 10px 15px; /* Padding inside each menu item */
+    text-decoration: none;
+    color: #333; /* Dark grey color for text */
+    background-color: #fff; /* White background for menu items */
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+li a:hover {
+    background-color: #007bff; /* Blue background on hover */
+    color: #fff; /* White text on hover */
+    border-color: #007bff; /* Blue border on hover */
+}
+
+.content {
+    padding: 20px; /* Adds 20px of space inside, between content and border */
+    background-color: #fff; /* Sets background color of content area to white */
+    margin: 20px; /* Adds 20px of space outside, separating content from other elements */
+    border-radius: 5px; /* Rounds corners of content area with 5px radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds subtle shadow around content:
+                                                - 0: Horizontal shadow offset
+                                                - 0: Vertical shadow offset
+                                                - 10px: Shadow blur radius
+                                                - rgba(0, 0, 0, 0.1): Shadow color with 10% opacity */
+}
+

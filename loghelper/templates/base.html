@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}"> <!-- Link to favicon -->
+</head>
+
+<body>
+<ul>
+    <li><a href="{% url 'home' %}">Главная страница</a></li>
+    {% for item in menu %}
+    <li>
+        <a href="{% url item.url_name %}">{{ item.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="content">
+    {% block content %} {% endblock %}
+</div>
+
+</body>
+</html>

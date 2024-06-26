@@ -1,23 +1,35 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-from django.template.loader import render_to_string
+
+menu = [
+    {'title': 'Уведомления', 'url_name': 'doc_info'},
+    {'title': 'ERIP', 'url_name': 'erip_info'},
+]
+
+data = {
+        'menu': menu
+    }
 
 
-# Create your views here.
-def index(request):
+def home(request):
     """
     View function for home page of site.
     """
-    return render(request, 'info_assist/index.html')
+    data['title'] = 'Главная страница'
+    return render(request, 'info_assist/home.html', context=data)
 
 
-def test(request):
-    print(request.GET)
-    return HttpResponse("<h1>Тест</h1>")
+def erip_info(request):
+    data['title'] = 'ERIP'
+    return render(request, 'info_assist/erip_info.html', context=data)
+
+
+def doc_info(request):
+    data['title'] = 'Уведомления'
+    return render(request, 'info_assist/doc_info.html', context=data)
 
 
 def page_not_found(request, exception):
     """
-    404 page
+    Custom 404 error handler.
     """
-    return HttpResponse("<h1>Страница не найдена</h1>")
+    return render(request, '404.html', status=404)
