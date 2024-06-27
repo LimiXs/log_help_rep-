@@ -14,7 +14,6 @@ def home(request):
     """
     View function for home page of site.
     """
-    data['title'] = 'Главная страница'
     return render(request, 'info_assist/home.html', context=data)
 
 
