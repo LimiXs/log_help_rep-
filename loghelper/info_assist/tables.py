@@ -8,39 +8,6 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 
-class DocTable(tables.Table):
-    class Meta:
-        model = DocumentInfo
-        attrs = {'class': 'table table-sm'}
-        template_name = 'django_tables2/bootstrap.html'
-        fields = (
-            'date_placement',
-            'num_item',
-            'num_transport',
-            'num_doc',
-            'date_docs',
-            'documents',
-            'status',
-            'num_nine',
-            'num_td',
-        )
-
-    download = tables.TemplateColumn(
-        verbose_name='Путь/Кнопка',
-        template_name='trade_logistic/download_button.html',
-        visible=True,
-        order_by=('path_doc',)
-    )
-
-
-class DocsFilter(FilterSet):
-    date_placement = DateFromToRangeFilter(widget=DateInput(), label='Дата')
-
-    class Meta:
-        model = DocumentInfo
-        fields = {"num_item": ["contains"], "date_placement": ["contains"]}
-
-
 class ERIPTable(tables.Table):
     class Meta:
         model = ERIPDataBase
@@ -58,8 +25,69 @@ class ERIPTable(tables.Table):
 class ERIPFilter(FilterSet):
     id_account = CharFilter(field_name='id_account', lookup_expr='icontains', label='Счёт договора')
     payer_name = CharFilter(field_name='payer_name', lookup_expr='icontains', label='ФИО плательщика')
-    date = DateFromToRangeFilter(widget=DateInput(), label='Дата оплаты')
+    date = DateFromToRangeFilter(
+        widget=DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
+        label='Дата оплаты'
+    )
 
     class Meta:
         model = ERIPDataBase
         fields = ['id_account', 'payer_name', 'date']
+
+
+class DocumentInfoTable(tables.Table):
+    download = tables.TemplateColumn(
+        template_name='info_assist/download_button.html',
+        verbose_name='Скачать', orderable=False
+    )
+
+    class Meta:
+        model = DocumentInfo
+        attrs = {'class': 'table table-sm'}
+        template_name = 'django_tables2/bootstrap.html'
+        fields = (
+            'date_placement',
+            'num_item',
+            'num_transport',
+            'status',
+            'num_nine',
+            'num_td',
+            'pdf_blob',  # Это поле содержит PDF файл, которое мы обрабатываем в шаблоне download_button.html
+        )
+        sequence = (
+            'date_placement', 'num_item', 'num_transport', 'num_doc',
+            'date_docs', 'status', 'num_nine', 'num_td', 'download'
+        )
+        exclude = ('path_doc', 'documents', 'num_doc', 'date_docs')
+
+
+# class DocTable(tables.Table):
+#     class Meta:
+#         model = DocumentInfo
+#         attrs = {'class': 'table table-sm'}
+#         template_name = 'django_tables2/bootstrap.html'
+#         fields = (
+#             'date_placement',
+#             'num_item',
+#             'num_transport',
+#             'num_doc',
+#             'date_docs',
+#             'status',
+#             'num_nine',
+#             'num_td',
+#         )
+#
+#     download = tables.TemplateColumn(
+#         verbose_name='Путь/Кнопка',
+#         template_name='trade_logistic/download_button.html',
+#         visible=True,
+#         order_by=('path_doc',)
+#     )
+#
+#
+# class DocsFilter(FilterSet):
+#     date_placement = DateFromToRangeFilter(widget=DateInput(), label='Дата')
+#
+#     class Meta:
+#         model = DocumentInfo
+#         fields = {"num_item": ["contains"], "date_placement": ["contains"]}

@@ -46,3 +46,144 @@ li a:hover {
                                                 - rgba(0, 0, 0, 0.1): Shadow color with 10% opacity */
 }
 
+/* Styles for the table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff; /* White background for table */
+    border-radius: 5px; /* Rounded corners for table */
+    overflow: hidden; /* Ensure rounded corners are visible */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around table */
+}
+
+.table th, .table td {
+    padding: 12px 15px; /* Padding inside table cells */
+    text-align: left; /* Left align text */
+    border-bottom: 1px solid #ddd; /* Light grey bottom border */
+}
+
+.table th {
+    background-color: #f8f8f8; /* Light grey background for header cells */
+    font-weight: bold; /* Bold text for header cells */
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey background for even rows */
+}
+
+.table tr:hover {
+    background-color: #e2e2e2; /* Slightly darker grey background for hovered rows */
+}
+
+.table-sm th, .table-sm td {
+    padding: 8px 10px; /* Smaller padding for small table */
+}
+
+.table .btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.table .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+/* Center pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    list-style: none;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+.page-item .page-link {
+    padding: 10px 15px;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-item .page-link:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+/* Styles for form elements */
+.search-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.btn-primary, .btn-secondary {
+    margin-top: 15px;
+    color: #fff;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    margin-left: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}

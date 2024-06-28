@@ -1,5 +1,37 @@
 {% extends 'base.html' %}
+{% load django_tables2 %}
 
 {% block content %}
-<h1>{{ title }}</h1>
+    <h2>ERIP Data Info</h2>
+    <form method="get" class="search-form">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="id_id_account">Счёт договора</label>
+                <input type="text" name="id_account" id="id_id_account"
+                       class="form-control" value="{{ request.GET.id_account }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="id_payer_name">Ф.И.О плательщика</label>
+                <input type="text" name="payer_name" id="id_payer_name"
+                       class="form-control" value="{{ request.GET.payer_name }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="id_date_after">Дата оплаты (с)</label>
+                <input type="date" name="date_after" id="id_date_after"
+                       class="form-control" value="{{ request.GET.date_after }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="id_date_before">Дата оплаты (по)</label>
+                <input type="date" name="date_before" id="id_date_before"
+                       class="form-control" value="{{ request.GET.date_before }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <button class="btn btn-primary" type="submit">Поиск</button>
+            <a href="{% url 'erip_info' %}" class="btn btn-secondary">Сбросить</a>
+        </div>
+    </form>
+    {% render_table table %}
 {% endblock %}

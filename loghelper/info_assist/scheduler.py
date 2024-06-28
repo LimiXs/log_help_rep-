@@ -1,9 +1,6 @@
-import os
-import shutil
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
-from django.core.files import File
 
 from .external_utils.file_manager import *
 from .external_utils.connecter_fdb import get_data_fdb, HOSTNAME, DATABASE_PATH, USERNAME, PASSWORD
@@ -13,20 +10,22 @@ from .models import DocumentInfo, PDFDataBase
 
 class Scheduler:
     def __init__(self):
-        self.scheduler = None
+        self.plan = None
 
     def start_scheduler(self, *tasks):
-        if self.scheduler is None:
-            self.scheduler = BackgroundScheduler()
-            self.scheduler.add_jobstore(DjangoJobStore(), 'default')
+        if self.plan is None:
+            self.plan = BackgroundScheduler()
+            self.plan.add_jobstore(DjangoJobStore(), 'default')
             for task in tasks:
-                self.scheduler.add_job(task['func'], 'interval', minutes=task['interval'])
-            self.scheduler.start()
+                self.plan.add_job(task['func'], 'interval', minutes=task['interval'])
+            self.plan.start()
 
     def stop_scheduler(self):
-        if self.scheduler:
-            self.scheduler.shutdown()
-            self.scheduler = None
+        if self.plan:
+            # Удаление всех jobs из хранилища DjangoJobStore
+            DjangoJobStore().remove_all_jobs()
+            self.plan.shutdown()
+            self.plan = None
 
 
 def match_pdfs_docs():
@@ -62,14 +61,15 @@ def match_pdfs_docs():
             doc_info.update(path_doc=pdf.full_path)
             doc_info_instance = doc_info.first()
             with open(pdf.full_path, 'rb') as pdf_file:
-                doc_info_instance.pdf_file.save(pdf.file_name, File(pdf_file), save=True)
+                doc_info_instance.pdf_blob = pdf_file.read()
+                doc_info_instance.save()
 
             pdf.in_use = True
             pdf.save()
 
 
 def upload_docs_db():
-    records = get_data_fdb(HOSTNAME, DATABASE_PATH, USERNAME, PASSWORD)
+    records = get_data_fdb()
     for record in records:
         if not DocumentInfo.objects.filter(num_item=record[0]).exists():
             DocumentInfo.objects.create(
@@ -83,20 +83,3 @@ def upload_docs_db():
                 num_nine=record[10],
                 num_td=record[11] if record[11] is None else record[11][:30].replace(';', '; ')
             )
-
-# def start_scheduler():
-#     global scheduler
-#     if scheduler is None:
-#         scheduler = BackgroundScheduler()
-#         scheduler.add_jobstore(DjangoJobStore(), 'default')
-#         scheduler.add_job(upload_docs_db, 'interval', minutes=10)
-#         scheduler.add_job(match_pdfs_docs, 'interval', minutes=15)
-#         scheduler.start()
-#
-#
-# def stop_scheduler():
-#     global scheduler
-#     if scheduler:
-#         scheduler.shutdown()
-#         scheduler = None
-#

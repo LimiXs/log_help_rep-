@@ -8,20 +8,19 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}"> <!-- Link to favicon -->
 </head>
-
 <body>
-<ul>
-    <li><a href="{% url 'home' %}">Главная</a></li>
-    {% for item in menu %}
-    <li>
-        <a href="{% url item.url_name %}">{{ item.title }}</a>
-    </li>
-    {% endfor %}
-</ul>
+    <ul>
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        {% for item in menu %}
+        <li>
+            <a href="{% url item.url_name %}">{{ item.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
 
-<div class="content">
-    {% block content %} {% endblock %}
-</div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 
 </body>
 </html>

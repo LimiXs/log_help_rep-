@@ -17,7 +17,7 @@ class DocumentInfo(models.Model):
     num_nine = models.CharField(max_length=30, blank=True, null=True, verbose_name='№ Длинной "9"')
     num_td = models.CharField(max_length=50, blank=True, null=True, verbose_name='Таможенное разрешение')
     path_doc = models.CharField(max_length=255, blank=True, null=True, verbose_name='Путь')
-    pdf_file = models.FileField(upload_to='pdfs/', null=True, blank=True, verbose_name='PDF файл')
+    pdf_blob = models.BinaryField(null=True, blank=True, verbose_name='PDF файл')
     objects = models.Manager()
 
     def __str__(self):
@@ -35,7 +35,6 @@ class ERIPDataBase(models.Model):
     bill_pay = models.FloatField(null=True, blank=True, verbose_name='Сумма оплаты')
     date = models.DateTimeField(null=True, blank=True, verbose_name='Дата оплаты')
     last_read_time = models.DateTimeField(null=True, blank=True, verbose_name='Время последнего чтения')
-
     objects = models.Manager()
 
     def __str__(self):

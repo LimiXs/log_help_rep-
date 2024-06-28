@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_apscheduler',
+    'django_tables2',
+    'django_filters',
     'admin_extra_buttons',
     'info_assist.apps.InfoAssistConfig',
 ]

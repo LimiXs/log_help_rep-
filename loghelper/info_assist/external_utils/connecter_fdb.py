@@ -16,7 +16,7 @@ USERNAME = stream_data.get('USERNAME')
 PASSWORD = stream_data.get('PASSWORD')
 
 QUERY = """
-SELECT (uvedoc.nomztk ||'/'||substring(uvedoc.drazm FROM 4 FOR 1)||'9'|| 
+SELECT FIRST 50 (uvedoc.nomztk ||'/'||substring(uvedoc.drazm FROM 4 FOR 1)||'9'|| 
 SUBSTRING(sum(1000000 + uvedoc.numitem) / count(prildoc.docid) FROM 2 FOR 7)) AS numer,
 uvedoc.drazm,
 uvedoc.numitem,
@@ -49,9 +49,9 @@ def replace_cyrillic_with_latin(text):
     return ''.join(CYRILLIC_TO_LATIN.get(char, char) for char in text)
 
 
-def get_data_fdb(hostname, database_path, username, password):
-    dsn = f'{hostname}:{database_path}'
-    con = fdb.connect(dsn=dsn, user=username, password=password)
+def get_data_fdb():
+    dsn = f'{HOSTNAME}:{DATABASE_PATH}'
+    con = fdb.connect(dsn=dsn, user=USERNAME, password=PASSWORD)
     cur = con.cursor()
     cur.execute(QUERY)
     data = list(cur.fetchall())

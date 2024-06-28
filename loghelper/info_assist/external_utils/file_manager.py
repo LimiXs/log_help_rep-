@@ -7,7 +7,6 @@ def count_files(catalog):
 
 
 def move_file(full_path, new_directory):
-
     shutil.move(full_path, new_directory)
 
 
