@@ -1,11 +1,53 @@
 import django_tables2 as tables
 from django import forms
+
 from .models import DocumentInfo, ERIPDataBase
-from django_filters import FilterSet, CharFilter, DateFromToRangeFilter
+from django_filters import FilterSet, CharFilter, DateFromToRangeFilter, DateFilter
 
 
 class DateInput(forms.DateInput):
     input_type = 'date'
+
+
+class DocumentInfoTable(tables.Table):
+    download = tables.TemplateColumn(
+        template_name='info_assist/download_button.html',
+        verbose_name='Скачать',
+        orderable=True,
+        order_by=('pdf_blob',)  # Указываем поле для сортировки
+    )
+
+    class Meta:
+        model = DocumentInfo
+        attrs = {'class': 'table table-sm'}
+        template_name = 'django_tables2/bootstrap.html'
+        fields = (
+            'date_placement',
+            'num_item',
+            'num_transport',
+            'status',
+            'num_nine',
+            'num_td',
+            'download'  # Включаем столбец "Скачать"
+        )
+        sequence = (
+            'date_placement', 'num_item', 'num_transport', 'num_doc',
+            'date_docs', 'status', 'num_nine', 'num_td', 'download'
+        )
+        exclude = ('path_doc', 'documents', 'num_doc', 'date_docs')
+
+
+class DocumentInfoFilter(FilterSet):
+    num_item = CharFilter(field_name='num_item', lookup_expr='icontains', label='№ УВР')
+    date_placement = DateFilter(
+        field_name='date_placement',
+        widget=DateInput(attrs={'placeholder': 'DD/MM/YYYY', 'max_length': 10}),
+        label='Дата'
+    )
+
+    class Meta:
+        model = DocumentInfo
+        fields = ['num_item', 'date_placement']
 
 
 class ERIPTable(tables.Table):
@@ -34,60 +76,3 @@ class ERIPFilter(FilterSet):
         model = ERIPDataBase
         fields = ['id_account', 'payer_name', 'date']
 
-
-class DocumentInfoTable(tables.Table):
-    download = tables.TemplateColumn(
-        template_name='info_assist/download_button.html',
-        verbose_name='Скачать', orderable=False
-    )
-
-    class Meta:
-        model = DocumentInfo
-        attrs = {'class': 'table table-sm'}
-        template_name = 'django_tables2/bootstrap.html'
-        fields = (
-            'date_placement',
-            'num_item',
-            'num_transport',
-            'status',
-            'num_nine',
-            'num_td',
-            'pdf_blob',  # Это поле содержит PDF файл, которое мы обрабатываем в шаблоне download_button.html
-        )
-        sequence = (
-            'date_placement', 'num_item', 'num_transport', 'num_doc',
-            'date_docs', 'status', 'num_nine', 'num_td', 'download'
-        )
-        exclude = ('path_doc', 'documents', 'num_doc', 'date_docs')
-
-
-# class DocTable(tables.Table):
-#     class Meta:
-#         model = DocumentInfo
-#         attrs = {'class': 'table table-sm'}
-#         template_name = 'django_tables2/bootstrap.html'
-#         fields = (
-#             'date_placement',
-#             'num_item',
-#             'num_transport',
-#             'num_doc',
-#             'date_docs',
-#             'status',
-#             'num_nine',
-#             'num_td',
-#         )
-#
-#     download = tables.TemplateColumn(
-#         verbose_name='Путь/Кнопка',
-#         template_name='trade_logistic/download_button.html',
-#         visible=True,
-#         order_by=('path_doc',)
-#     )
-#
-#
-# class DocsFilter(FilterSet):
-#     date_placement = DateFromToRangeFilter(widget=DateInput(), label='Дата')
-#
-#     class Meta:
-#         model = DocumentInfo
-#         fields = {"num_item": ["contains"], "date_placement": ["contains"]}

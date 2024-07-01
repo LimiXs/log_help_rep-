@@ -1,10 +1,7 @@
 {% load static %}
 
 {% if record.pdf_blob %}
-    <a href="#" class="btn btn-sm btn-primary" onclick="downloadPDF('{{ record.pk }}')">Скачать</a>
-    <script>
-        function downloadPDF(pk) {
-            window.location.href = "{% url 'download_pdf' %}?pk=" + pk;
-        }
-    </script>
+    <a href="{% url 'download_pdf' record.pk %}" class="btn-download">Скачать</a>
+{% else %}
+    <span class="text-muted">-</span>
 {% endif %}

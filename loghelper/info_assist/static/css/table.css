@@ -1,0 +1,62 @@
+/* Table styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff; /* Белый фон для таблицы */
+    border-radius: 5px; /* Закругление углов таблицы */
+    overflow: hidden; /* Гарантия видимости закругленных углов */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ненавязчивая тень вокруг таблицы */
+
+}
+
+.table th, .table td {
+    padding: 12px 15px; /* Отступы внутри ячеек таблицы */
+    text-align: left; /* Выравнивание текста по левому краю */
+    border-bottom: 1px solid #ddd; /* Светло-серая нижняя рамка */
+}
+
+.table th {
+    background-color: #f8f8f8; /* Светло-серый фон для ячеек заголовка */
+    font-weight: bold; /* Жирный шрифт для ячеек заголовка */
+    text-decoration: none; /* Убираем подчеркивание */
+    border: none; /* Убираем границы */
+}
+
+.table th a {
+    text-decoration: none; /* Убираем подчеркивание у ссылок внутри заголовка */
+}
+
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Светло-серый фон для чётных строк */
+}
+
+.table tr:hover {
+    background-color: #e2e2e2; /* Немного темнее серый фон при наведении */
+}
+
+/* Small table styles */
+.table-sm th, .table-sm td {
+    padding: 8px 10px; /* Уменьшенные отступы для маленькой таблицы */
+}
+
+/* Download button in table styles */
+.table .btn-download {
+    color: #fff;
+    background-color: #28a745; /* Зелёный цвет для кнопки */
+    border-color: #28a745; /* Зелёная рамка для кнопки */
+    padding: 3px 7px; /* Слегка уменьшенные отступы */
+    font-size: 0.875rem; /* Уменьшенный размер шрифта */
+    border-radius: 5px; /* Закругленные углы */
+    text-align: center;
+    display: inline-block; /* Отображать как блочный элемент */
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s; /* Плавный переход для эффекта наведения */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+.table .btn-download:hover {
+    background-color: #218838; /* Тёмно-зелёный цвет при наведении */
+    border-color: #1e7e34; /* Тёмно-зелёная рамка при наведении */
+}

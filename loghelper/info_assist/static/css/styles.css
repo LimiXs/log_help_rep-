@@ -1,97 +1,135 @@
+/* Global styles */
 body {
-    background-color: #f0f0f0; /* Light grey background for the entire page */
+    background-color: #f0f0f0; /* Светло-серый фон для всей страницы */
     margin: 0;
-    font-family: Arial, sans-serif; /* Set a default font family */
+    font-family: 'Arial', sans-serif; /* Установка красивого шрифта */
 }
 
+/* Menu styles */
 ul {
     display: flex;
     list-style-type: none;
     padding: 0;
     margin: 0;
-    background-color: #f0f0f0; /* Light grey background for the menu */
-    padding: 10px; /* Add some padding to the menu */
+    background-color: #f0f0f0; /* Светло-серый фон для меню */
+    padding: 10px; /* Добавление немного отступов к меню */
 }
 
 li {
-    margin-right: 15px; /* Adjust spacing as needed */
+    margin-right: 15px; /* Регулировка расстояния между пунктами меню */
 }
 
 li a {
     display: block;
-    padding: 10px 15px; /* Padding inside each menu item */
+    padding: 10px 15px; /* Отступы внутри каждого пункта меню */
     text-decoration: none;
-    color: #333; /* Dark grey color for text */
-    background-color: #fff; /* White background for menu items */
-    border: 1px solid #ddd; /* Light grey border */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+    color: #333; /* Тёмно-серый цвет текста */
+    background-color: #fff; /* Белый фон для пунктов меню */
+    border: 1px solid #ddd; /* Светло-серая рамка */
+    border-radius: 5px; /* Закругление углов */
+    transition: background-color 0.3s, color 0.3s; /* Плавный переход для эффекта при наведении */
 }
 
 li a:hover {
-    background-color: #007bff; /* Blue background on hover */
-    color: #fff; /* White text on hover */
-    border-color: #007bff; /* Blue border on hover */
+    background-color: #007bff; /* Синий фон при наведении */
+    color: #fff; /* Белый текст при наведении */
+    border-color: #007bff; /* Синяя рамка при наведении */
 }
 
+/* Content area styles */
 .content {
-    padding: 20px; /* Adds 20px of space inside, between content and border */
-    background-color: #fff; /* Sets background color of content area to white */
-    margin: 20px; /* Adds 20px of space outside, separating content from other elements */
-    border-radius: 5px; /* Rounds corners of content area with 5px radius */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds subtle shadow around content:
-                                                - 0: Horizontal shadow offset
-                                                - 0: Vertical shadow offset
-                                                - 10px: Shadow blur radius
-                                                - rgba(0, 0, 0, 0.1): Shadow color with 10% opacity */
+    padding: 20px; /* Добавление отступов внутри контентной области */
+    background-color: #fff; /* Белый фон контентной области */
+    margin: 20px; /* Внешние отступы для разделения контента от других элементов */
+    border-radius: 5px; /* Закругление углов контентной области */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ненавязчивая тень вокруг контента */
 }
 
-/* Styles for the table */
+/* Table styles */
 .table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    background-color: #fff; /* White background for table */
-    border-radius: 5px; /* Rounded corners for table */
-    overflow: hidden; /* Ensure rounded corners are visible */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around table */
+    background-color: #fff; /* Белый фон для таблицы */
+    border-radius: 5px; /* Закругление углов таблицы */
+    overflow: hidden; /* Гарантия видимости закругленных углов */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ненавязчивая тень вокруг таблицы */
 }
 
 .table th, .table td {
-    padding: 12px 15px; /* Padding inside table cells */
-    text-align: left; /* Left align text */
-    border-bottom: 1px solid #ddd; /* Light grey bottom border */
+    padding: 12px 15px; /* Отступы внутри ячеек таблицы */
+    text-align: left; /* Выравнивание текста по левому краю */
+    border-bottom: 1px solid #ddd; /* Светло-серая нижняя рамка */
 }
 
 .table th {
-    background-color: #f8f8f8; /* Light grey background for header cells */
-    font-weight: bold; /* Bold text for header cells */
+    background-color: #f8f8f8; /* Светло-серый фон для ячеек заголовка */
+    font-weight: bold; /* Жирный шрифт для ячеек заголовка */
+    text-decoration: none; /* Убираем подчёркивание у текста */
+    border: none; /* Убираем границы */
 }
 
 .table tr:nth-child(even) {
-    background-color: #f2f2f2; /* Light grey background for even rows */
+    background-color: #f2f2f2; /* Светло-серый фон для чётных строк */
 }
 
 .table tr:hover {
-    background-color: #e2e2e2; /* Slightly darker grey background for hovered rows */
+    background-color: #e2e2e2; /* Немного темнее серый фон при наведении */
 }
 
+/* Small table styles */
 .table-sm th, .table-sm td {
-    padding: 8px 10px; /* Smaller padding for small table */
+    padding: 8px 10px; /* Уменьшенные отступы для маленькой таблицы */
 }
 
-.table .btn-primary {
+/* Button styles */
+.btn-primary, .btn-secondary {
+    margin-top: 15px;
     color: #fff;
     background-color: #007bff;
-    border-color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
-.table .btn-primary:hover {
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    margin-left: 10px;
+}
+
+.btn-primary:hover {
     background-color: #0056b3;
     border-color: #004085;
 }
 
-/* Center pagination */
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Download button in table styles */
+.table .btn-download {
+    color: #fff;
+    background-color: #28a745; /* Зелёный цвет для кнопки */
+    border-color: #28a745; /* Зелёная рамка для кнопки */
+    padding: 5px 10px; /* Слегка уменьшенные отступы */
+    font-size: 0.875rem; /* Уменьшенный размер шрифта */
+    border-radius: 5px; /* Закругленные углы */
+    text-align: center;
+    display: inline-block; /* Отображать как блочный элемент */
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s; /* Плавный переход для эффекта наведения */
+}
+
+.table .btn-download:hover {
+    background-color: #218838; /* Тёмно-зелёный цвет при наведении */
+    border-color: #1e7e34; /* Тёмно-зелёная рамка при наведении */
+}
+
+/* Pagination styles */
 .pagination {
     display: flex;
     justify-content: center;
@@ -125,7 +163,7 @@ li a:hover {
     border-color: #007bff;
 }
 
-/* Styles for form elements */
+/* Form styles */
 .search-form {
     display: flex;
     flex-direction: column;
@@ -159,31 +197,4 @@ li a:hover {
 .form-control:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.btn-primary, .btn-secondary {
-    margin-top: 15px;
-    color: #fff;
-    background-color: #007bff;
-    border: 1px solid #007bff;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    margin-left: 10px;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #004085;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
 }

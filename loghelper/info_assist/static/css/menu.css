@@ -1,0 +1,30 @@
+/* Menu styles */
+ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: #f0f0f0; /* Светло-серый фон для меню */
+    padding: 10px; /* Добавление немного отступов к меню */
+}
+
+li {
+    margin-right: 15px; /* Регулировка расстояния между пунктами меню */
+}
+
+li a {
+    display: block;
+    padding: 10px 15px; /* Отступы внутри каждого пункта меню */
+    text-decoration: none;
+    color: #333; /* Тёмно-серый цвет текста */
+    background-color: #fff; /* Белый фон для пунктов меню */
+    border: 1px solid #ddd; /* Светло-серая рамка */
+    border-radius: 5px; /* Закругление углов */
+    transition: background-color 0.3s, color 0.3s; /* Плавный переход для эффекта при наведении */
+}
+
+li a:hover {
+    background-color: #007bff; /* Синий фон при наведении */
+    color: #fff; /* Белый текст при наведении */
+    border-color: #007bff; /* Синяя рамка при наведении */
+}

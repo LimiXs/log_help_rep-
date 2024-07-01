@@ -1,0 +1,51 @@
+/* Global styles */
+body {
+    background-color: #f0f0f0; /* Светло-серый фон для всей страницы */
+    margin: 0;
+    font-family: 'Arial', sans-serif; /* Установка красивого шрифта */
+}
+
+/* General styles */
+.content {
+    padding: 20px; /* Добавление отступов внутри контентной области */
+    background-color: #fff; /* Белый фон контентной области */
+    margin: 20px; /* Внешние отступы для разделения контента от других элементов */
+    border-radius: 5px; /* Закругление углов контентной области */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ненавязчивая тень вокруг контента */
+}
+
+/* Form styles */
+.search-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
