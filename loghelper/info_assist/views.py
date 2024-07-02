@@ -57,7 +57,7 @@ def erip_info(request):
     return render(
         request,
         'info_assist/erip_info.html',
-        {'table': table, 'filter': erip_filter, 'menu': menu},
+        {'table': table, 'filter': erip_filter, 'menu': menu, 'title': 'ERIP'},
     )
 
 

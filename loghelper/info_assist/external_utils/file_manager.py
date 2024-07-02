@@ -32,3 +32,4 @@ class FileManager:
     def check_file_exists(self, filename: str) -> bool:
         file_path = os.path.join(self.directory, filename)
         return os.path.isfile(file_path)
+
