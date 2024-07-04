@@ -40,16 +40,6 @@ def doc_info(request):
     )
 
 
-def download_pdf(request, pk):
-    document = get_object_or_404(DocumentInfo, pk=pk)
-    if document.pdf_blob:
-        response = HttpResponse(document.pdf_blob, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="{document.num_item}.pdf"'
-        return response
-    else:
-        return HttpResponse("Файл не найден", status=404)
-
-
 def erip_info(request):
     erip_filter = ERIPFilter(request.GET, queryset=ERIPDataBase.objects.all())
     table = ERIPTable(erip_filter.qs)
@@ -59,6 +49,16 @@ def erip_info(request):
         'info_assist/erip_info.html',
         {'table': table, 'filter': erip_filter, 'menu': menu, 'title': 'ERIP'},
     )
+
+
+def download_pdf(request, pk):
+    document = get_object_or_404(DocumentInfo, pk=pk)
+    if document.pdf_blob:
+        response = HttpResponse(document.pdf_blob, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{document.num_item}.pdf"'
+        return response
+    else:
+        return HttpResponse("Файл не найден", status=404)
 
 
 def test(request):
