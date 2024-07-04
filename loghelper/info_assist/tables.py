@@ -4,6 +4,10 @@ from django import forms
 from .models import DocumentInfo, ERIPDataBase
 from django_filters import FilterSet, CharFilter, DateFromToRangeFilter, DateFilter
 
+ATTRS = {'class': 'table table-sm'}
+TEMPLATE_NAME = 'django_tables2/bootstrap.html'
+WIDGET_ATTR = {'placeholder': 'DD/MM/YYYY', 'max_length': 10}
+
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -19,8 +23,8 @@ class DocumentInfoTable(tables.Table):
 
     class Meta:
         model = DocumentInfo
-        attrs = {'class': 'table table-sm'}
-        template_name = 'django_tables2/bootstrap.html'
+        attrs = ATTRS
+        template_name = TEMPLATE_NAME
         fields = (
             'date_placement',
             'num_item',
@@ -41,7 +45,7 @@ class DocumentInfoFilter(FilterSet):
     num_item = CharFilter(field_name='num_item', lookup_expr='icontains', label='№ УВР')
     date_placement = DateFilter(
         field_name='date_placement',
-        widget=DateInput(attrs={'placeholder': 'DD/MM/YYYY', 'max_length': 10}),
+        widget=DateInput(attrs=WIDGET_ATTR),
         label='Дата'
     )
 
@@ -53,8 +57,8 @@ class DocumentInfoFilter(FilterSet):
 class ERIPTable(tables.Table):
     class Meta:
         model = ERIPDataBase
-        attrs = {'class': 'table table-sm'}
-        template_name = 'django_tables2/bootstrap.html'
+        attrs = ATTRS
+        template_name = TEMPLATE_NAME
         fields = (
             'id_account',
             'payer_name',
@@ -68,11 +72,10 @@ class ERIPFilter(FilterSet):
     id_account = CharFilter(field_name='id_account', lookup_expr='icontains', label='Счёт договора')
     payer_name = CharFilter(field_name='payer_name', lookup_expr='icontains', label='ФИО плательщика')
     date = DateFromToRangeFilter(
-        widget=DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
+        widget=DateInput(attrs=WIDGET_ATTR),
         label='Дата оплаты'
     )
 
     class Meta:
         model = ERIPDataBase
         fields = ['id_account', 'payer_name', 'date']
-
