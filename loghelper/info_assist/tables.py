@@ -1,12 +1,13 @@
 import django_tables2 as tables
+
 from django import forms
+from django_filters import FilterSet, CharFilter, DateFromToRangeFilter, DateFilter
 
 from .models import DocumentInfo, ERIPDataBase
-from django_filters import FilterSet, CharFilter, DateFromToRangeFilter, DateFilter
 
 ATTRS = {'class': 'table table-sm'}
 TEMPLATE_NAME = 'django_tables2/bootstrap.html'
-WIDGET_ATTR = {'placeholder': 'DD/MM/YYYY', 'max_length': 10}
+WIDGET_ATTR = {'placeholder': 'dd/mm/yyyy', 'format': '%d/%m/%Y', 'max_length': 10}
 
 
 class DateInput(forms.DateInput):
@@ -42,7 +43,7 @@ class DocumentInfoTable(tables.Table):
 
 
 class DocumentInfoFilter(FilterSet):
-    num_item = CharFilter(field_name='num_item', lookup_expr='icontains', label='№ УВР')
+    num_item = CharFilter(field_name='num_item', lookup_expr='iregex', label='№ УВР')
     date_placement = DateFilter(
         field_name='date_placement',
         widget=DateInput(attrs=WIDGET_ATTR),
@@ -70,7 +71,7 @@ class ERIPTable(tables.Table):
 
 class ERIPFilter(FilterSet):
     id_account = CharFilter(field_name='id_account', lookup_expr='icontains', label='Счёт договора')
-    payer_name = CharFilter(field_name='payer_name', lookup_expr='icontains', label='ФИО плательщика')
+    payer_name = CharFilter(field_name='payer_name', lookup_expr='iregex', label='Ф.И.О плательщика')
     date = DateFromToRangeFilter(
         widget=DateInput(attrs=WIDGET_ATTR),
         label='Дата оплаты'
