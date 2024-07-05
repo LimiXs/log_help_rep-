@@ -23,6 +23,7 @@ from info_assist import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('info_assist.urls')),
+    path('users/', include('users.urls', namespace='users')),
 ] + debug_toolbar_urls()
 
 handler404 = views.page_not_found

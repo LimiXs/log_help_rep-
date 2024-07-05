@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     'info_assist.apps.InfoAssistConfig',
+    'users',
     'admin_extra_buttons',
     'debug_toolbar',
 ]
