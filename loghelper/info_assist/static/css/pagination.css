@@ -6,11 +6,11 @@
     list-style: none;
 }
 
-.page-item {
+.pagination li {
     margin: 0 5px;
 }
 
-.page-item .page-link {
+.pagination li a {
     padding: 10px 15px;
     color: #007bff;
     background-color: #fff;
@@ -20,13 +20,13 @@
     transition: background-color 0.3s, color 0.3s;
 }
 
-.page-item .page-link:hover {
+.pagination li a:hover {
     background-color: #007bff;
     color: #fff;
     border-color: #007bff;
 }
 
-.page-item.active .page-link {
+.pagination li.active a {
     background-color: #007bff;
     color: #fff;
     border-color: #007bff;

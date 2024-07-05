@@ -12,10 +12,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/button.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/pagination.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/form.css' %}">
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/debug_toolbar.css' %}">-->
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}"> <!-- Link to favicon -->
 </head>
 <body>
-    <ul>
+    <ul class="menu">
         <li><a href="{% url 'home' %}">Главная</a></li>
         {% for item in menu %}
         <li>
