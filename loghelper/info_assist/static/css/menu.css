@@ -1,10 +1,23 @@
 /* Menu styles */
 .menu {
+    margin-right: 25px;
     display: flex;
     list-style-type: none;
-    padding: 5;
-    margin: 5;
     background-color: #f0f0f0; /* Светло-серый фон для меню */
+}
+
+.last {
+    margin-left: auto; /* Отодвигаем элемент к правому краю */
+}
+
+.menu .last {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.menu .last a {
+    margin-left: 15px;
 }
 
 .menu li {
@@ -27,3 +40,4 @@
     color: #fff; /* Белый текст при наведении */
     border-color: #007bff; /* Синяя рамка при наведении */
 }
+

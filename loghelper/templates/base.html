@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
+{% load info_assist_tags %}
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
-    {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/menu.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/content.css' %}">
@@ -12,17 +12,24 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/button.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/pagination.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/form.css' %}">
-    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/debug_toolbar.css' %}">-->
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}"> <!-- Link to favicon -->
 </head>
 <body>
     <ul class="menu">
         <li><a href="{% url 'home' %}">Главная</a></li>
-        {% for item in menu %}
+        {% if user.is_authenticated %}
+        {% for item in mainmenu %}
         <li>
             <a href="{% url item.url_name %}">{{ item.title }}</a>
         </li>
         {% endfor %}
+        <li class="last"><li><a href="{% url 'users:logout' %}">Выйти ({{ user.username }})</a></li>
+    {% else %}
+        <li class="last">
+            <a href="{% url 'users:login' %}">Войти</a>
+            <a href="{% url 'users:register' %}">Регистрация</a>
+        </li>
+    {% endif %}
     </ul>
 
     <div class="content">
