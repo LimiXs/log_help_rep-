@@ -12,24 +12,30 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/button.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/pagination.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/authorization.css' %}">
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}"> <!-- Link to favicon -->
 </head>
 <body>
     <ul class="menu">
         <li><a href="{% url 'home' %}">Главная</a></li>
         {% if user.is_authenticated %}
-        {% for item in mainmenu %}
-        <li>
-            <a href="{% url item.url_name %}">{{ item.title }}</a>
-        </li>
-        {% endfor %}
-        <li class="last"><li><a href="{% url 'users:logout' %}">Выйти ({{ user.username }})</a></li>
-    {% else %}
+            {% for item in mainmenu %}
+            <li>
+                <a href="{% url item.url_name %}">{{ item.title }}</a>
+            </li>
+            {% endfor %}
+            <li class="last">
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-button">Выйти ({{ user.username }})</button>
+                </form>
+            </li>
+        {% else %}
         <li class="last">
-            <a href="{% url 'users:login' %}">Войти</a>
-            <a href="{% url 'users:register' %}">Регистрация</a>
+            <a href="{% url 'users:login' %}" class="login-button">Войти</a>
+            <a href="{% url 'users:register' %}" class="login-button">Регистрация</a>
         </li>
-    {% endif %}
+        {% endif %}
     </ul>
 
     <div class="content">

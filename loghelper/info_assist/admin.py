@@ -73,7 +73,7 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
                     num_doc=record[4],
                     date_docs=record[7],
                     documents=record[6],
-                    status=record[9],
+                    status=record[8],
                     num_nine=record[10],
                     num_td=record[11] if record[11] is None else record[11][:30].replace(';', '; ')
                 )

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django_tables2 import RequestConfig
@@ -14,6 +15,7 @@ def home(request):
     return render(request, 'info_assist/home.html', context={'menu': menu})
 
 
+@login_required
 def doc_info(request):
     """
     Представление для отображения списка документов.
@@ -54,6 +56,7 @@ def doc_info(request):
     )
 
 
+@login_required
 def erip_info(request):
     erip_filter = ERIPFilter(request.GET, queryset=ERIPDataBase.objects.all())
     table = ERIPTable(erip_filter.qs)
@@ -65,6 +68,7 @@ def erip_info(request):
     )
 
 
+@login_required
 def download_pdf(request, pk):
     document = get_object_or_404(DocumentInfo, pk=pk)
     if document.pdf_blob:
