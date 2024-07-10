@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-CLASS_FORM_INPUT = {'class': 'form-input'}
+CLASS_FORM_INPUT = {'class': 'form-input-auth'}
 
 PASSWORD = 'password'
 PASSWORD2 = 'password2'

@@ -1,22 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Авторизация</h1>
-
-<form method="post">
-    {% csrf_token %}
-    <div class="form-error">{{ form.non_field_errors }}</div>
-
-    {% for field in form %}
-        <p><label class="form-label" for="{{ field.id_for_label }}">{{field.label}}</label> {{ field }}</p>
-        <div class="form-error">{{ field.errors }}</div>
-    {% endfor %}
-
-    {% if next %}
-        <input type="hidden" name="next" value="{{ next }}">
-    {% endif %}
-    <p><button type="submit">Войти</button></p>
-</form>
-
+<div class="form-container-auth">
+    <div class="form-content-auth">
+        <h1>Авторизация</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-error">{{ form.non_field_errors }}</div>
+            {% for field in form %}
+                <div class="form-group-auth">
+                    <label class="form-label-auth" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                <div class="form-error">{{ field.errors }}</div>
+            {% endfor %}
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+            <p><button type="submit" class="btn-primary">Войти</button></p>
+        </form>
+    </div>
+</div>
 {% endblock %}
-<!--{{ form.as_p }}-->

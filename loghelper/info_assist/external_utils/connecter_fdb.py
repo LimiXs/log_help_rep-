@@ -44,9 +44,27 @@ CYRILLIC_TO_LATIN = {
         'р': 'p', 'с': 'c', 'у': 'y', 'х': 'x'
     }
 
+STATUS_DICT = {
+    1: "Зарегистрировано",
+    2: "Снят с контроля",
+    4: "Аннулировано",
+    6: "Ожидание",
+    7: "Обрабатывается"
+}
+
 
 def replace_cyrillic_with_latin(text):
     return ''.join(CYRILLIC_TO_LATIN.get(char, char) for char in text)
+
+
+def remove_duplicates(element):
+    if isinstance(element, str) and (';' in element or '; ' in element):
+        # Разделяем элемент по ';' или '; '
+        items = element.replace('; ', ';').split(';')
+        # Убираем пустые строки и дубликаты, а затем объединяем обратно с '\n'
+        unique_items = '; '.join(sorted(set(item.strip() for item in items if item.strip())))
+        return unique_items
+    return element
 
 
 def get_data_fdb():
@@ -60,6 +78,12 @@ def get_data_fdb():
     con.close()
 
     records = []
-    for i, row in enumerate(data):
-        records.append(list(row))
+    for row in data:
+        processed_row = [remove_duplicates(el) for el in row]
+        processed_row[8] = STATUS_DICT.get(processed_row[8], processed_row[8])
+        records.append(processed_row)
     return records
+
+
+# a = get_data_fdb()
+# print(a)

@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
 
 from .external_utils.file_manager import *
-from .external_utils.connecter_fdb import get_data_fdb, HOSTNAME, DATABASE_PATH, USERNAME, PASSWORD
+from .external_utils.connecter_fdb import get_data_fdb
 from .external_utils.parser_pdf import *
 from .models import DocumentInfo, PDFDataBase
 
@@ -75,11 +75,11 @@ def upload_docs_db():
             DocumentInfo.objects.create(
                 date_placement=record[1],
                 num_item=record[0],
-                num_transport=record[3].replace(';', '; '),
+                num_transport=record[3],
                 num_doc=record[4],
                 date_docs=record[7],
                 documents=record[6],
                 status=record[9],
                 num_nine=record[10],
-                num_td=record[11] if record[11] is None else record[11][:30].replace(';', '; ')
+                num_td=record[11]
             )

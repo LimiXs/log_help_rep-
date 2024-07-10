@@ -1,18 +1,20 @@
-<!--register.html-->
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Регистрация</h1>
-
-<form method="post">
-    {% csrf_token %}
-
-    {% for field in form %}
-        <p><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label> {{ field }}</p>
-        <div class="form-error">{{ field.errors }}</div>
-    {% endfor %}
-
-    <p><button type="submit">Зарегистрироваться</button></p>
-</form>
-
+<div class="form-container-auth">
+    <div class="form-content-auth">
+        <h1>Регистрация</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group-auth">
+                    <label class="form-label-auth" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                <div class="form-error">{{ field.errors }}</div>
+            {% endfor %}
+            <p><button type="submit" class="btn-primary">Зарегистрироваться</button></p>
+        </form>
+    </div>
+</div>
 {% endblock %}

@@ -23,6 +23,7 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         'num_transport',
         'status',
         'num_nine',
+        'documents',
         'num_td',
         'path_doc',
         'pdf_blob_link',
@@ -67,15 +68,15 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         for record in records:
             if not DocumentInfo.objects.filter(num_item=record[0]).exists():
                 DocumentInfo.objects.create(
-                    date_placement=record[1],
                     num_item=record[0],
-                    num_transport=record[3].replace(';', '; '),
+                    date_placement=record[1],
+                    num_transport=record[3],
                     num_doc=record[4],
                     date_docs=record[7],
                     documents=record[6],
                     status=record[8],
                     num_nine=record[10],
-                    num_td=record[11] if record[11] is None else record[11][:30].replace(';', '; ')
+                    num_td=record[11],
                 )
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
