@@ -1,26 +1,21 @@
+<!--doc_info.html-->
 {% extends 'base.html' %}
 {% load django_tables2 %}
 
 {% block content %}
     <h2>{{ title }}</h2>
     <form method="get" class="search-form">
+        {% csrf_token %}
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="id_num_item">№ УВР</label>
-                <input type="text" name="num_item" id="id_num_item"
-                       class="form-control" value="{{ request.GET.num_item }}">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="id_date_placement">Дата</label>
-                <input type="date" name="date_placement" id="id_date_placement"
-                       class="form-control" value="{{ request.GET.date_placement }}">
-            </div>
+            {{ filter.form }}
         </div>
+
         <div class="form-row">
             <button class="btn btn-primary" type="submit">Поиск</button>
             <a href="{% url 'doc_info' %}?pdf_only=true" class="btn btn-primary">PDF записи</a>
             <a href="{% url 'doc_info' %}" class="btn btn-secondary">Сбросить</a>
         </div>
+
     </form>
     {% render_table table %}
 {% endblock %}

@@ -3,13 +3,12 @@ from django.db import connection
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import path, reverse
 from django.utils.html import format_html
-from admin_extra_buttons.api import ExtraButtonsMixin, button
 
-from .external_utils.connecter_fdb import get_data_fdb
 from .scheduler import match_pdfs_docs, upload_docs_db, Scheduler
 from .management.commands.read_files_erip import Command
 from .utils import MAPPING
 
+from admin_extra_buttons.api import ExtraButtonsMixin, button
 from info_assist.models import *
 
 
@@ -64,21 +63,7 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         html_attrs={"class": 'btn-primary'}
     )
     def load_data(self, request):
-        records = get_data_fdb()
-        for record in records:
-            if not DocumentInfo.objects.filter(num_item=record[0]).exists():
-                DocumentInfo.objects.create(
-                    num_item=record[0],
-                    date_placement=record[1],
-                    num_transport=record[3],
-                    num_doc=record[4],
-                    date_docs=record[7],
-                    documents=record[6],
-                    status=record[8],
-                    num_nine=record[10],
-                    num_td=record[11],
-                )
-
+        upload_docs_db()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     @button(
@@ -88,8 +73,8 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     )
     def admin_start_scheduler(self, request):
         self.scheduler.start_scheduler(
-            {'func': match_pdfs_docs, 'interval': 2},
-            {'func': upload_docs_db, 'interval': 3}
+            {'func': match_pdfs_docs, 'interval': 5},
+            {'func': upload_docs_db, 'interval': 10},
         )
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

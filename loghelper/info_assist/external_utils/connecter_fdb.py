@@ -16,7 +16,7 @@ USERNAME = stream_data.get('USERNAME')
 PASSWORD = stream_data.get('PASSWORD')
 
 QUERY = """
-SELECT FIRST 50 (uvedoc.nomztk ||'/'||substring(uvedoc.drazm FROM 4 FOR 1)||'9'|| 
+SELECT (uvedoc.nomztk ||'/'||substring(uvedoc.drazm FROM 4 FOR 1)||'9'||
 SUBSTRING(sum(1000000 + uvedoc.numitem) / count(prildoc.docid) FROM 2 FOR 7)) AS numer,
 uvedoc.drazm,
 uvedoc.numitem,
@@ -28,7 +28,7 @@ LIST(prildoc.dtdoc, '; ') AS dtdoc,
 uvedoc.docstate,
 uvedoc.date_ss,
 uvedoc.regnum_pto,
-LIST(custrazr.numtd, ';') AS numtd
+LIST (distinct custrazr.numtd, ';') AS numtd
 FROM uvedoc
 LEFT OUTER JOIN prildoc ON uvedoc.docid = prildoc.docid
 LEFT OUTER JOIN NSITYPDOC ON prildoc.typdid = NSITYPDOC.typdid
@@ -59,9 +59,9 @@ def replace_cyrillic_with_latin(text):
 
 def remove_duplicates(element):
     if isinstance(element, str) and (';' in element or '; ' in element):
-        # Разделяем элемент по ';' или '; '
+
         items = element.replace('; ', ';').split(';')
-        # Убираем пустые строки и дубликаты, а затем объединяем обратно с '\n'
+
         unique_items = '; '.join(sorted(set(item.strip() for item in items if item.strip())))
         return unique_items
     return element
@@ -72,6 +72,7 @@ def get_data_fdb():
     con = fdb.connect(dsn=dsn, user=USERNAME, password=PASSWORD)
     cur = con.cursor()
     cur.execute(QUERY)
+
     data = list(cur.fetchall())
 
     cur.close()
@@ -79,11 +80,7 @@ def get_data_fdb():
 
     records = []
     for row in data:
-        processed_row = [remove_duplicates(el) for el in row]
+        processed_row = list(row)
         processed_row[8] = STATUS_DICT.get(processed_row[8], processed_row[8])
         records.append(processed_row)
     return records
-
-
-# a = get_data_fdb()
-# print(a)

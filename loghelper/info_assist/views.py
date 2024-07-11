@@ -17,35 +17,16 @@ def home(request):
 
 @login_required
 def doc_info(request):
-    """
-    Представление для отображения списка документов.
-
-    Параметры:
-    request (django.http.HttpRequest): Объект запроса Django.
-
-    Возвращает:
-    django.http.HttpResponse: Отрендеренный HTML-шаблон с информацией о документах.
-    """
-    # Получаем все объекты DocumentInfo из базы данных
     queryset = DocumentInfo.objects.all()
-
-    # Проверяем, есть ли в запросе параметр 'pdf_only'
     pdf_only = request.GET.get('pdf_only')
 
-    # Если параметр 'pdf_only' равен 'true', фильтруем queryset, оставляя только документы с заполненным pdf_blob
     if pdf_only == 'true':
         queryset = queryset.filter(pdf_blob__isnull=False)
 
-    # Создаем фильтр для queryset на основе параметров запроса
     document_filter = DocumentInfoFilter(request.GET, queryset=queryset)
-
-    # Создаем таблицу для отображения документов, сортируя ее по параметру 'sort' из запроса
     table = DocumentInfoTable(document_filter.qs, order_by=request.GET.get('sort'))
-
-    # Настраиваем пагинацию таблицы, отображая по 10 записей на странице
     RequestConfig(request, paginate={'per_page': 12}).configure(table)
 
-    # Возвращаем отрендеренный HTML-шаблон с информацией о документах
     return render(
         request,
         'info_assist/doc_info.html',
