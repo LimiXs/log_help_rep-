@@ -6,3 +6,5 @@ venv
 django-admin
 **/.idea/
 */.idea/
+manage.py
+.env
