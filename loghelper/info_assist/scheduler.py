@@ -79,7 +79,13 @@ def upload_docs_db():
                 num_doc=record[4],
                 date_docs=record[7],
                 documents=record[6],
-                status=record[9],
+                status=record[8],
+                num_nine=record[10],
+                num_td=record[11]
+            )
+        elif DocumentInfo.objects.filter(num_item=record[0]).exists():
+            DocumentInfo.objects.filter(num_item=record[0]).update(
+                status=record[8],
                 num_nine=record[10],
                 num_td=record[11]
             )
