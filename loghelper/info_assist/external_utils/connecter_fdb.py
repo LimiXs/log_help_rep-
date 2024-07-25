@@ -34,15 +34,12 @@ LEFT OUTER JOIN prildoc ON uvedoc.docid = prildoc.docid
 LEFT OUTER JOIN NSITYPDOC ON prildoc.typdid = NSITYPDOC.typdid
 LEFT OUTER JOIN custrazr ON uvedoc.docid = custrazr.docid
 WHERE
-uvedoc.drazm >= current_date -1
+uvedoc.drazm >= current_date -1 and
+prildoc.docid is not null and
+uvedoc.numitem is not null
 GROUP BY uvedoc.nomztk, uvedoc.drazm, uvedoc.numitem, uvedoc.transp_num,
 uvedoc.docstate, uvedoc.date_ss, uvedoc.regnum_pto
 """
-CYRILLIC_TO_LATIN = {
-        'А': 'A', 'В': 'B', 'Е': 'E', 'К': 'K', 'М': 'M', 'Н': 'H', 'О': 'O',
-        'Р': 'P', 'С': 'C', 'Т': 'T', 'Х': 'X', 'а': 'a', 'е': 'e', 'о': 'o',
-        'р': 'p', 'с': 'c', 'у': 'y', 'х': 'x'
-    }
 
 STATUS_DICT = {
     1: "Зарегистрировано",

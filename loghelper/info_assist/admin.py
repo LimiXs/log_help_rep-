@@ -73,8 +73,7 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     )
     def admin_start_scheduler(self, request):
         self.scheduler.start_scheduler(
-            {'func': match_pdfs_docs, 'interval': 5},
-            {'func': upload_docs_db, 'interval': 10},
+            {'func': match_pdfs_docs, 'interval': 3},
         )
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

@@ -5,6 +5,17 @@ import re
 from pytesseract import Output
 from info_assist.external_utils.miscellaneous import *
 
+LATIN_TO_CYRILLIC = {
+    'A': 'А', 'B': 'В', 'E': 'Е', 'K': 'К', 'M': 'М', 'H': 'Н', 'O': 'О',
+    'P': 'Р', 'C': 'С', 'T': 'Т', 'X': 'Х', 'a': 'а', 'e': 'е', 'o': 'о',
+    'p': 'р', 'c': 'с', 'y': 'у', 'x': 'х'
+}
+
+def convert_to_cyrillic(element):
+    result = ""
+    for char in element:
+        result += LATIN_TO_CYRILLIC.get(char, char)
+    return result
 
 def get_doc_number(file_path):
     try:
@@ -29,4 +40,4 @@ def get_doc_number(file_path):
 
         for element in text.split(' '):
             if '-' in element and '/' in element and (len(element) == 24 or len(element) == 25):
-                return element
+                return convert_to_cyrillic(element)

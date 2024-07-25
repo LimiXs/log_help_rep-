@@ -1,18 +1,33 @@
+from django_tables2 import RequestConfig
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django_tables2 import RequestConfig
+from django.urls import reverse
 
 from info_assist.models import ERIPDataBase, DocumentInfo
 from info_assist.tables import ERIPFilter, ERIPTable, DocumentInfoTable, DocumentInfoFilter
 from info_assist.utils import menu
+from .scheduler import match_pdfs_docs, upload_docs_db, Scheduler
 
 
+@login_required
 def home(request):
     """
     View function for home page of site.
     """
-    return render(request, 'info_assist/home.html', context={'menu': menu})
+    if request.user.is_authenticated:
+        extra_button = {
+            'label': 'Действие для авторизованных пользователей',
+            'url': reverse('test')
+        }
+    else:
+        extra_button = None
+
+    context = {
+        'menu': menu,
+        'extra_button': extra_button
+    }
+    return render(request, 'info_assist/home.html', context=context)
 
 
 @login_required
@@ -45,7 +60,7 @@ def erip_info(request):
     return render(
         request,
         'info_assist/erip_info.html',
-        {'table': table, 'filter': erip_filter, 'title': 'ERIP'},
+        context={'table': table, 'filter': erip_filter, 'title': 'ERIP'},
     )
 
 

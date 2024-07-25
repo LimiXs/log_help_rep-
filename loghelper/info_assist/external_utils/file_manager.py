@@ -2,8 +2,6 @@ import os
 import shutil
 
 
-def count_files(catalog):
-    return len([1 for x in list(os.scandir(catalog)) if x.is_file()])
 
 
 def move_file(full_path, new_directory):

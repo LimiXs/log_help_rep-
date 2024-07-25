@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -17,9 +18,10 @@ def get_secret(setting):
         raise ImproperlyConfigured(error_msg)
 
 
-SECRET_KEY = get_secret('SECRET_KEY')
-
-ALLOWED_HOSTS = ['127.0.0.1']
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
+  
+ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ['127.0.0.1']
 
 # Application definition

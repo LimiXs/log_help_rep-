@@ -1,6 +1,6 @@
-
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
+from django_apscheduler.models import DjangoJobExecution
 
 from .external_utils.file_manager import *
 from .external_utils.connecter_fdb import get_data_fdb
@@ -19,20 +19,46 @@ class Scheduler:
             for task in tasks:
                 self.plan.add_job(task['func'], 'interval', minutes=task['interval'])
             self.plan.start()
+     
+     
+    @staticmethod
+    def stop_scheduler():
+        jobstore = DjangoJobStore()
+        jobs = jobstore.get_all_jobs()
+        for job in jobs:
+            jobstore.remove_job(job.id)
+ 
 
-    def stop_scheduler(self):
-        if self.plan:
-            # Удаление всех jobs из хранилища DjangoJobStore
-            DjangoJobStore().remove_all_jobs()
-            self.plan.shutdown()
-            self.plan = None
+
+def upload_docs_db():
+    records = get_data_fdb()  
+    for record in records:
+        doc_obj = DocumentInfo.objects.filter(num_item=record[0])
+        if not doc_obj.exists():
+            DocumentInfo.objects.create(
+                date_placement=record[1],
+                num_item=record[0],
+                num_transport=record[3],
+                num_doc=record[4],
+                date_docs=record[7],
+                documents=record[6],
+                status=record[8],
+                num_nine=record[10],
+                num_td=record[11]
+            )
+        elif doc_obj.exists():
+            doc_obj.update(
+                status=record[8],
+                num_nine=record[10],
+                num_td=record[11]
+            )
 
 
 def match_pdfs_docs():
-    count_of_files = count_files(CATALOG_PDFS)
-
+    upload_docs_db()
+    
     directory = os.listdir(CATALOG_PDFS)
-    if count_of_files > 0:
+    if len(directory) > 0:
         for file in directory:
             extension = os.path.splitext(file)[1]
             file_path = os.path.join(CATALOG_PDFS, file)
@@ -68,24 +94,3 @@ def match_pdfs_docs():
             pdf.save()
 
 
-def upload_docs_db():
-    records = get_data_fdb()
-    for record in records:
-        if not DocumentInfo.objects.filter(num_item=record[0]).exists():
-            DocumentInfo.objects.create(
-                date_placement=record[1],
-                num_item=record[0],
-                num_transport=record[3],
-                num_doc=record[4],
-                date_docs=record[7],
-                documents=record[6],
-                status=record[8],
-                num_nine=record[10],
-                num_td=record[11]
-            )
-        elif DocumentInfo.objects.filter(num_item=record[0]).exists():
-            DocumentInfo.objects.filter(num_item=record[0]).update(
-                status=record[8],
-                num_nine=record[10],
-                num_td=record[11]
-            )

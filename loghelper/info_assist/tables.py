@@ -44,6 +44,7 @@ class DocumentInfoTable(tables.Table):
             'date_docs', 'status', 'num_nine', 'num_td', 'download'
         )
         exclude = ('path_doc', 'documents', 'num_doc', 'date_docs')
+        order_by = ('-date_placement',)
 
 
 class DocumentInfoFilter(FilterSet):
@@ -68,6 +69,7 @@ class DocumentInfoFilter(FilterSet):
     class Meta:
         model = DocumentInfo
         fields = ['num_item', 'num_transport', 'date_placement']
+        order_by = ['-date_placement']
 
 
 class ERIPTable(tables.Table):
