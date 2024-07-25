@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import path, reverse
 from django.utils.html import format_html
 
-from .scheduler import match_pdfs_docs, upload_docs_db, Scheduler
+from .scheduler import Scheduler
+from .tasks import *
 from .management.commands.read_files_erip import Command
 from .utils import MAPPING
 
@@ -73,7 +74,7 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     )
     def admin_start_scheduler(self, request):
         self.scheduler.start_scheduler(
-            {'func': match_pdfs_docs, 'interval': 3},
+            {'func': match_pdfs_docs, 'interval': 10},
         )
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

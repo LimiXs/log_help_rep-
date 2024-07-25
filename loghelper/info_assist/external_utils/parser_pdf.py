@@ -11,11 +11,13 @@ LATIN_TO_CYRILLIC = {
     'p': 'р', 'c': 'с', 'y': 'у', 'x': 'х'
 }
 
+
 def convert_to_cyrillic(element):
     result = ""
     for char in element:
         result += LATIN_TO_CYRILLIC.get(char, char)
     return result
+
 
 def get_doc_number(file_path):
     try:
