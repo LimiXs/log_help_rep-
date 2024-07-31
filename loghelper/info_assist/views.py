@@ -7,7 +7,6 @@ from django.urls import reverse
 from info_assist.models import ERIPDataBase, DocumentInfo
 from info_assist.tables import ERIPFilter, ERIPTable, DocumentInfoTable, DocumentInfoFilter
 from info_assist.utils import menu
-from .scheduler import match_pdfs_docs, upload_docs_db, Scheduler
 
 
 @login_required
