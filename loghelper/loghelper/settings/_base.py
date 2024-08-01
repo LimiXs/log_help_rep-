@@ -10,10 +10,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 
-if os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[2] == 'production':
-    PDFS_BASE_CATALOG = r'\\10.137.2.200\doc$'
-else:
+if os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[2] == 'development':
     PDFS_BASE_CATALOG = r'D:\Temp\pdf_files'
+else:
+    PDFS_BASE_CATALOG = r'\\10.137.2.200\doc$'
+
 
 def get_secret(setting):
     try:

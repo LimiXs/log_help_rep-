@@ -41,6 +41,11 @@ class PDFDataBase(models.Model):
     blob = models.BinaryField(null=True, blank=True, verbose_name='PDF файл')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
+    document = models.OneToOneField(
+        DocumentInfo, on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name='pdf_file'
+    )
     objects = models.Manager()
 
     def __str__(self):

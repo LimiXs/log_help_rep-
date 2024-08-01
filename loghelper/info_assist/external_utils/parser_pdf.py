@@ -28,7 +28,7 @@ class PDFParser:
 
     @staticmethod
     def __is_valid_format(element):
-        if len(element) != 25:
+        if len(element) not in (24, 25):
             return False
         pattern = r'^[A-ZА-Я]{2}.{5}/\d{7}/\d{8}$'
         return re.match(pattern, element) is not None
@@ -52,5 +52,6 @@ class PDFParser:
             text = re.sub(' +', ' ', text)
 
             for element in text.split(' '):
+                print(element)
                 if self.__is_valid_format(element):
                     return self.__convert_to_cyrillic(element)

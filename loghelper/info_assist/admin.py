@@ -13,6 +13,24 @@ from admin_extra_buttons.api import ExtraButtonsMixin, button
 from info_assist.models import *
 
 
+class PDFFileFilter(admin.SimpleListFilter):
+    title = 'Наличие PDF файла'
+    parameter_name = 'has_pdf'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', 'С PDF файлом'),
+            ('no', 'Без PDF файла'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(pdf_file__isnull=False)
+        if self.value() == 'no':
+            return queryset.filter(pdf_file__isnull=True)
+        return queryset
+
+
 @admin.register(DocumentInfo)
 class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     scheduler = Scheduler()
@@ -23,38 +41,13 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         'num_transport',
         'status',
         'num_nine',
-        'documents',
         'num_td',
+        'download_pdf',  # Добавляем поле для скачивания PDF
     )
     list_display_links = ('id', 'num_item')
     search_fields = ('num_item', 'num_transport')
     list_per_page = 10
-
-    # def pdf_blob_link(self, obj):
-    #     if obj.pdf_blob:
-    #         return format_html(
-    #             '<a href="{}">Скачать PDF</a>',
-    #             reverse('admin:download_pdf', args=[obj.pk])
-    #         )
-    #     return "Нет файла"
-    #
-    # pdf_blob_link.short_description = 'PDF файл'
-    #
-    # def get_urls(self):
-    #     urls = super().get_urls()
-    #     custom_urls = [
-    #         path('download_pdf/<int:pk>/', self.download_pdf, name='download_pdf'),
-    #     ]
-    #     return custom_urls + urls
-    #
-    # def download_pdf(self, request, pk):
-    #     obj = self.get_object(request, pk)
-    #     if obj.pdf_blob:
-    #         response = HttpResponse(obj.pdf_blob, content_type='application/pdf')
-    #         response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(obj.num_item)
-    #         return response
-    #     else:
-    #         return HttpResponse("Файл не найден", status=404)
+    list_filter = (PDFFileFilter,)  # Добавляем фильтр
 
     @button(
         label='Загрузить данные',
@@ -62,19 +55,8 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         html_attrs={"class": 'btn-primary'}
     )
     def load_data(self, request):
-        upload_docs_db()
+        link_pdf_to_documents()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-    # @button(
-    #     label='Запустить планировщик',
-    #     change_form=True,
-    #     html_attrs={"class": 'btn-primary'}
-    # )
-    # def admin_start_scheduler(self, request):
-    #     self.scheduler.start_scheduler(
-    #         {'func': match_pdfs_docs, 'interval': 10},
-    #     )
-    #     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     @button(
         label='Остановить планировщик',
@@ -85,6 +67,14 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         self.scheduler.stop_scheduler()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+    def download_pdf(self, obj):
+        if hasattr(obj, 'pdf_file') and obj.pdf_file:
+            return f'<a href="{obj.pdf_file.full_path}" download>Скачать PDF</a>'
+        return 'Нет PDF файла'
+
+    download_pdf.allow_tags = True  # Позволяем HTML в поле
+    download_pdf.short_description = 'Скачать PDF файл'  # Заголовок столбца
+
 
 @admin.register(ERIPDataBase)
 class ERIPDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
@@ -92,7 +82,11 @@ class ERIPDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     list_display_links = ('id', 'id_account',)
     search_fields = ('id_account',)
 
-    @button(label='Удалить всё и сбросить автоинкремент', change_form=True, html_attrs={"class": 'btn-primary'})
+    @button(
+        label='Удалить всё и сбросить автоинкремент',
+        change_form=True,
+        html_attrs={"class": 'btn-primary'}
+    )
     def delete_all_and_reset(self, request):
         ERIPDataBase.objects.all().delete()
         self.message_user(request, "Все данные успешно удалены", level=messages.SUCCESS)
@@ -104,7 +98,11 @@ class ERIPDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-    @button(label='Загрузить данные', change_form=True, html_attrs={"class": 'btn-primary'})
+    @button(
+        label='Загрузить данные',
+        change_form=True,
+        html_attrs={"class": 'btn-primary'}
+    )
     def load_data(self, request):
         Command().handle()
         self.message_user(request, "Данные успешно загружены", level=messages.SUCCESS)
@@ -117,15 +115,27 @@ class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     list_display_links = ('id',)
 
     @button(
-        label='Обновить символы',
+        label='Парсинг и Загрузка',
         change_form=True,
         html_attrs={"class": 'btn-primary'}
     )
-    def update_chars(self, request):
-        records = PDFDataBase.objects.all()
-        for record in records:
-            for english_char, russian_char in MAPPING.items():
-                record.doc_number = record.doc_number.replace(english_char, russian_char)
-            record.save()
+    def scan_and_load(self, request):
+        scan_and_load_pdfs()
+        link_pdf_to_documents()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    @button(
+        label='Удалить всё и сбросить автоинкремент',
+        change_form=True,
+        html_attrs={"class": 'btn-primary'}
+    )
+    def delete_all_and_reset(self, request):
+        PDFDataBase.objects.all().delete()
+        self.message_user(request, "Все данные успешно удалены", level=messages.SUCCESS)
+
+        table_name = PDFDataBase._meta.db_table
+        with connection.cursor() as cursor:
+            cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table_name}';")
+        self.message_user(request, "Автоинкремент успешно сброшен", level=messages.SUCCESS)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
