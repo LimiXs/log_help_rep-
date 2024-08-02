@@ -9,12 +9,12 @@ def scan_and_load_pdfs():
     directory = os.listdir(CATALOG_PDFS)
     if len(directory) > 0:
         parser = PDFParser()
-
+        
         for file in directory:
             extension = os.path.splitext(file)[1]
             file_path = os.path.join(CATALOG_PDFS, file)
             doc_number = parser.parse_pdf_for_number(file_path) if extension == parser.PDF else None
-            print(file, doc_number)
+
             if doc_number is None:
                 new_directory = CATALOG_NOT_FOUND_FILES
             else:
@@ -28,13 +28,20 @@ def scan_and_load_pdfs():
                     record.full_path = os.path.join(CATALOG_DOWNLOAD_PDFS, file)
                     record.file_name = file
                     record.blob = pdf_blob
+
+                    document = None
+                    try:
+                        document = DocumentInfo.objects.get(num_item=doc_number)
+                        record.document = document
+                        record.status = 'linked'
+                    except DocumentInfo.DoesNotExist:
+                        pass
                     record.save()
                 else:
                     file = f"{os.path.splitext(file)[0]}_exist{extension}"
 
-                record.save()
-
             new_file_path = os.path.join(new_directory, file)
+            print(new_file_path, doc_number)
             if os.path.exists(new_file_path):
                 os.remove(new_file_path)
             shutil.move(file_path, new_directory)
@@ -47,9 +54,9 @@ def link_pdf_to_documents():
             document = DocumentInfo.objects.get(num_item=pdf.doc_number)
             pdf.document = document
             pdf.status = 'linked'
+            pdf.save()
         except DocumentInfo.DoesNotExist:
-            pdf.status = 'not_found'
-        pdf.save()
+            continue
 
 
 def upload_docs_db():

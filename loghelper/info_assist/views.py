@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
+from info_assist.forms import ExtraButtonsForm
 from info_assist.models import ERIPDataBase, DocumentInfo
 from info_assist.tables import ERIPFilter, ERIPTable, DocumentInfoTable, DocumentInfoFilter
 from info_assist.utils import menu
@@ -15,16 +16,24 @@ def home(request):
     View function for home page of site.
     """
     if request.user.is_authenticated:
-        extra_button = {
-            'label': 'Действие для авторизованных пользователей',
-            'url': reverse('test')
-        }
+        buttons_form = ExtraButtonsForm(initial={
+            'button1': {'label': 'Кнопка 1', 'url': reverse('home')},
+            'button2': {'label': 'Кнопка 2', 'url': reverse('home')},
+            'button3': {'label': 'Кнопка 3', 'url': reverse('home')},
+        })
+        buttons = [
+            {'label': 'Кнопка 1', 'url': reverse('home')},
+            {'label': 'Кнопка 2', 'url': reverse('home')},
+            {'label': 'Кнопка 3', 'url': reverse('home')}
+        ]
     else:
-        extra_button = None
+        buttons_form = None
+        buttons = None
 
     context = {
         'menu': menu,
-        'extra_button': extra_button
+        'buttons_form': buttons_form,
+        'buttons': buttons
     }
     return render(request, 'info_assist/home.html', context=context)
 

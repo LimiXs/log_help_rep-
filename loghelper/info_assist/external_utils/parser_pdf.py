@@ -17,8 +17,19 @@ class PDFParser:
     TESSERACT_PATH = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
     PDF = '.pdf'
 
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(PDFParser, cls).__new__(cls)
+        else:
+            print("An instance of PDFParser already exists. Please finish processing before creating a new one.")
+        return cls._instance
+
     def __init__(self):
-        pytesseract.pytesseract.tesseract_cmd = self.TESSERACT_PATH
+        if not hasattr(self, 'initialized'):  # Ensure initialization happens only once
+            pytesseract.pytesseract.tesseract_cmd = self.TESSERACT_PATH
+            self.initialized = True
 
     def __convert_to_cyrillic(self, element):
         result = ""

@@ -25,9 +25,8 @@ class DocumentInfo(models.Model):
 
 class PDFDataBase(models.Model):
     STATUS_CHOICES = [
-        ('uploaded', 'Загружен'),
-        ('linked', 'Связан'),
         ('not_found', 'Не найден'),
+        ('linked', 'Связан'),
     ]
     doc_number = models.CharField(max_length=30, unique=True, verbose_name='Номер уведомления')
     full_path = models.CharField(max_length=255, blank=True, verbose_name='Полный путь')
