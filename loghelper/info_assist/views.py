@@ -1,3 +1,4 @@
+from cryptography.fernet import Fernet
 from django_tables2 import RequestConfig
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -8,6 +9,7 @@ from info_assist.forms import ExtraButtonsForm
 from info_assist.models import ERIPDataBase, DocumentInfo
 from info_assist.tables import ERIPFilter, ERIPTable, DocumentInfoTable, DocumentInfoFilter
 from info_assist.utils import menu
+from loghelper.settings._base import CRYPTO_KEY
 
 
 @login_required
@@ -44,7 +46,7 @@ def doc_info(request):
     pdf_only = request.GET.get('pdf_only')
 
     if pdf_only == 'true':
-        queryset = queryset.filter(pdf_blob__isnull=False)
+        queryset = queryset.filter(pdf_file__isnull=False)
 
     document_filter = DocumentInfoFilter(request.GET, queryset=queryset)
     table = DocumentInfoTable(document_filter.qs, order_by=request.GET.get('sort'))
@@ -75,8 +77,17 @@ def erip_info(request):
 @login_required
 def download_pdf(request, pk):
     document = get_object_or_404(DocumentInfo, pk=pk)
-    if document.pdf_blob:
-        response = HttpResponse(document.pdf_blob, content_type='application/pdf')
+    # if document.pdf_file:
+    #     response = HttpResponse(document.pdf_file, content_type='application/pdf')
+    #     response['Content-Disposition'] = f'attachment; filename="{document.num_item}.pdf"'
+    #     return response
+    # else:
+    #     return HttpResponse("Файл не найден", status=404)
+    if document.pdf_file:
+        pdf_data = document.pdf_file.blob
+        cipher = Fernet(CRYPTO_KEY)
+        pdf_blob = cipher.decrypt(pdf_data)
+        response = HttpResponse(pdf_blob, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="{document.num_item}.pdf"'
         return response
     else:

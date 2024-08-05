@@ -121,7 +121,7 @@ class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     )
     def scan_and_load(self, request):
         scan_and_load_pdfs()
-        link_pdf_to_documents()
+        # link_pdf_to_documents()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     @button(

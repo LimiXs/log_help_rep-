@@ -19,12 +19,12 @@ class DateInput(forms.DateInput):
 
 
 class DocumentInfoTable(tables.Table):
-    # download = tables.TemplateColumn(
-    #     template_name='info_assist/download_button.html',
-    #     verbose_name='Скачать',
-    #     orderable=True,
-    #     order_by=('pdf_blob',)
-    # )
+    download = tables.TemplateColumn(
+        template_name='info_assist/download_button.html',
+        verbose_name='Скачать',
+        orderable=True,
+        order_by=('pdf_file',)
+    )
 
     class Meta:
         model = DocumentInfo
@@ -37,12 +37,11 @@ class DocumentInfoTable(tables.Table):
             'status',
             'num_nine',
             'num_td',
-            # 'download'
+            'download'
         )
         sequence = (
             'date_placement', 'num_item', 'num_transport', 'num_doc',
             'date_docs', 'status', 'num_nine', 'num_td',
-            # 'download'
         )
         exclude = ('path_doc', 'documents', 'num_doc', 'date_docs')
         order_by = ('-date_placement',)

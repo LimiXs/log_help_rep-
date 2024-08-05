@@ -2,6 +2,8 @@ from .external_utils.file_manager import *
 from .external_utils.miscellaneous import *
 from .external_utils.parser_pdf import PDFParser
 from .external_utils.connecter_fdb import get_data_fdb
+from cryptography.fernet import Fernet
+from loghelper.settings._base import CRYPTO_KEY
 from .models import DocumentInfo, PDFDataBase
 
 
@@ -9,6 +11,7 @@ def scan_and_load_pdfs():
     directory = os.listdir(CATALOG_PDFS)
     if len(directory) > 0:
         parser = PDFParser()
+        cipher = Fernet(CRYPTO_KEY)
         
         for file in directory:
             extension = os.path.splitext(file)[1]
@@ -27,7 +30,7 @@ def scan_and_load_pdfs():
                 if created:
                     record.full_path = os.path.join(CATALOG_DOWNLOAD_PDFS, file)
                     record.file_name = file
-                    record.blob = pdf_blob
+                    record.blob = cipher.encrypt(pdf_blob)
 
                     document = None
                     try:
