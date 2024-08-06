@@ -63,6 +63,5 @@ class PDFParser:
             text = re.sub(' +', ' ', text)
 
             for element in text.split(' '):
-                print(element)
                 if self.__is_valid_format(element):
                     return self.__convert_to_cyrillic(element)

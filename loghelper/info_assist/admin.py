@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import path, reverse
 from django.utils.html import format_html
 
+from .forms import PDFDataBaseAdminForm
 from .scheduler import Scheduler
 from .tasks import *
 from .management.commands.read_files_erip import Command
@@ -109,10 +110,74 @@ class ERIPDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-@admin.register(PDFDataBase)
+#
+# @admin.register(PDFDataBase)
+# class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+#     list_display = [field.name for field in PDFDataBase._meta.fields]
+#     list_display_links = ('id',)
+#
+#
+
 class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
-    list_display = [field.name for field in PDFDataBase._meta.fields]
+    form = PDFDataBaseAdminForm
+
+    list_display = (
+        'id',
+        'doc_number',
+        'full_path',
+        'file_name',
+        'status',
+        'created_at',
+        'updated_at',
+        'download_link',
+    )
     list_display_links = ('id',)
+
+    def download_link(self, obj):
+        if obj.blob:
+            return format_html('<a href="{}">Скачать PDF</a>', self.get_download_url(obj.id))
+        return "Нет файла"
+
+    download_link.short_description = 'Ссылка на PDF'
+
+    def get_download_url(self, object_id):
+        return f'/admin/info_assist/pdfdatabase/{object_id}/download_pdf/'
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:object_id>/download_pdf/', self.admin_site.admin_view(self.download_pdf), name='download_pdf'),
+            path('<int:object_id>/clear_pdf/', self.admin_site.admin_view(self.clear_pdf), name='clear_pdf'),
+        ]
+        return custom_urls + urls
+
+    def download_pdf(self, request, object_id):
+        pdf_instance = self.get_object(request, object_id)
+        if pdf_instance and pdf_instance.blob:
+            response = HttpResponse(pdf_instance.blob, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{pdf_instance.file_name or "document.pdf"}"'
+            return response
+        else:
+            self.message_user(request, "PDF файл не найден", level=messages.ERROR)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    def clear_pdf(self, request, object_id):
+        pdf_instance = self.get_object(request, object_id)
+        if pdf_instance:
+            pdf_instance.blob = None
+            pdf_instance.save()
+            self.message_user(request, "PDF файл успешно очищен", level=messages.SUCCESS)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    def save_model(self, request, obj, form, change):
+        if form.cleaned_data.get('new_pdf_file'):
+            obj.blob = form.cleaned_data['new_pdf_file']
+        super().save_model(request, obj, form, change)
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['blob']  # Make the blob field read-only
+        return super().get_readonly_fields(request, obj)
 
     @button(
         label='Парсинг и Загрузка',
@@ -139,3 +204,6 @@ class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         self.message_user(request, "Автоинкремент успешно сброшен", level=messages.SUCCESS)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+admin.site.register(PDFDataBase, PDFDataBaseAdmin)

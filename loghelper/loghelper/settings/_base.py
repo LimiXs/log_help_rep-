@@ -11,12 +11,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 load_dotenv()
 setting = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[2]
-PDFS_BASE_CATALOG = r'D:\Temp\pdf_files' if setting == 'development' else r'\\10.137.2.200\doc$'
-# PDFS_BASE_CATALOG = os.getenv(setting)
 
+PDFS_BASE_CATALOG = (
+    os.getenv('PDFS_BASE_CATALOG_DEVELOPMENT')
+    if setting == 'development'
+    else os.getenv('PDFS_BASE_CATALOG_PRODUCTION')
+)
 SECRET_KEY = os.getenv('SECRET_KEY')
-CRYPTO_KEY = os.getenv('CRYPTO_KEY')
-
 
 ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ['127.0.0.1']

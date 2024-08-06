@@ -1,4 +1,3 @@
-from cryptography.fernet import Fernet
 from django_tables2 import RequestConfig
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -9,7 +8,6 @@ from info_assist.forms import ExtraButtonsForm
 from info_assist.models import ERIPDataBase, DocumentInfo
 from info_assist.tables import ERIPFilter, ERIPTable, DocumentInfoTable, DocumentInfoFilter
 from info_assist.utils import menu
-from loghelper.settings._base import CRYPTO_KEY
 
 
 @login_required
@@ -84,9 +82,7 @@ def download_pdf(request, pk):
     # else:
     #     return HttpResponse("Файл не найден", status=404)
     if document.pdf_file:
-        pdf_data = document.pdf_file.blob
-        cipher = Fernet(CRYPTO_KEY)
-        pdf_blob = cipher.decrypt(pdf_data)
+        pdf_blob = document.pdf_file.blob
         response = HttpResponse(pdf_blob, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="{document.num_item}.pdf"'
         return response
