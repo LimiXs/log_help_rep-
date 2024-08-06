@@ -12,6 +12,7 @@ class DocumentInfo(models.Model):
     status = models.CharField(max_length=255, blank=True, null=True, verbose_name='Статус УВР')
     num_nine = models.CharField(max_length=30, blank=True, null=True, verbose_name='№ Длинной "9"')
     num_td = models.CharField(max_length=50, blank=True, null=True, verbose_name='Таможенное разрешение')
+    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name='Дата обновления')
     objects = models.Manager()
     
     class Meta:

@@ -5,7 +5,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 
 from .forms import PDFDataBaseAdminForm
-from .scheduler import Scheduler
+from .scheduler import start_scheduler, stop_scheduler
 from .tasks import *
 from .management.commands.read_files_erip import Command
 from .utils import MAPPING
@@ -34,7 +34,7 @@ class PDFFileFilter(admin.SimpleListFilter):
 
 @admin.register(DocumentInfo)
 class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
-    scheduler = Scheduler()
+
     list_display = (
         'id',
         'date_placement',
@@ -55,8 +55,17 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         change_form=True,
         html_attrs={"class": 'btn-primary'}
     )
-    def load_data(self, request):
+    def admin_load_data(self, request):
         link_pdf_to_documents()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    @button(
+        label='Запустить планировщик',
+        change_form=True,
+        html_attrs={"class": 'btn-primary'}
+    )
+    def admin_start_scheduler(self, request):
+        start_scheduler()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     @button(
@@ -65,7 +74,7 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         html_attrs={"class": 'btn-primary'}
     )
     def admin_stop_scheduler(self, request):
-        self.scheduler.stop_scheduler()
+        stop_scheduler()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     def download_pdf(self, obj):
@@ -174,10 +183,10 @@ class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
             obj.blob = form.cleaned_data['new_pdf_file']
         super().save_model(request, obj, form, change)
 
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return ['blob']  # Make the blob field read-only
-        return super().get_readonly_fields(request, obj)
+    # def get_readonly_fields(self, request, obj=None):
+    #     if obj:
+    #         return ['blob']  # Make the blob field read-only
+    #     return super().get_readonly_fields(request, obj)
 
     @button(
         label='Парсинг и Загрузка',
