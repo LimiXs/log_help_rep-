@@ -6,6 +6,7 @@ from .models import DocumentInfo, PDFDataBase
 
 
 def scan_and_load_pdfs():
+
     directory = os.listdir(CATALOG_PDFS)
     if len(directory) > 0:
         parser = PDFParser()
@@ -48,7 +49,9 @@ def scan_and_load_pdfs():
 
 
 def link_pdf_to_documents():
-    pdf_files = PDFDataBase.objects.all()
+    # Выбираем только те PDF, которые не связаны с документами
+    pdf_files = PDFDataBase.objects.filter(document__isnull=True)
+
     for pdf in pdf_files:
         try:
             document = DocumentInfo.objects.get(num_item=pdf.doc_number)
@@ -56,28 +59,48 @@ def link_pdf_to_documents():
             pdf.status = 'linked'
             pdf.save()
         except DocumentInfo.DoesNotExist:
+            # Если документ не найден, можно обновить статус PDF, если это необходимо
+            pdf.status = 'not_found'  # или любое другое значение, которое вы хотите установить
+            pdf.save()
             continue
 
 
 def upload_docs_db():
     records = get_data_fdb()
+
+    # Списки для пакетного создания и обновления
+    to_create = []
+    to_update = []
+
     for record in records:
-        doc_obj = DocumentInfo.objects.filter(num_item=record[0])
-        if not doc_obj.exists():
-            DocumentInfo.objects.create(
-                date_placement=record[1],
-                num_item=record[0],
-                num_transport=record[3],
-                num_doc=record[4],
-                date_docs=record[7],
-                documents=record[6],
-                status=record[8],
-                num_nine=record[10],
-                num_td=record[11]
-            )
-        elif doc_obj.exists():
-            doc_obj.update(
-                status=record[8],
-                num_nine=record[10],
-                num_td=record[11]
-            )
+        num_item = record[0]
+        status = record[4]
+        num_nine = record[6]
+        num_td = record[7]
+
+        # Попытка получить существующий объект
+        doc_obj, created = DocumentInfo.objects.get_or_create(
+            num_item=num_item,
+            defaults={
+                'date_placement': record[1],
+                'num_transport': record[3],
+                'status': status,
+                'num_nine': num_nine,
+                'num_td': num_td
+            }
+        )
+
+        # Если объект уже существует и у него нет num_td, добавляем в список обновлений
+        if not created and not doc_obj.num_td:
+            doc_obj.status = status
+            doc_obj.num_nine = num_nine
+            doc_obj.num_td = num_td
+            to_update.append(doc_obj)
+
+    # Пакетное обновление
+    if to_update:
+        DocumentInfo.objects.bulk_update(to_update, ['status', 'num_nine', 'num_td'])
+
+    # Пакетное создание
+    if to_create:
+        DocumentInfo.objects.bulk_create(to_create)

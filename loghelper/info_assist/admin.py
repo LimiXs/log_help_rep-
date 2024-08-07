@@ -32,9 +32,26 @@ class PDFFileFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(DocumentInfo)
-class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+class DeleteAllAndResetMixin:
+    @button(
+        label='Удалить всё и сбросить автоинкремент',
+        change_form=True,
+        html_attrs={"class": 'btn-primary'}
+    )
+    def delete_all_and_reset(self, request):
+        self.model.objects.all().delete()
+        self.message_user(request, "Все данные успешно удалены", level=messages.SUCCESS)
 
+        table_name = self.model._meta.db_table
+        with connection.cursor() as cursor:
+            cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table_name}';")
+        self.message_user(request, "Автоинкремент успешно сброшен", level=messages.SUCCESS)
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@admin.register(DocumentInfo)
+class DocumentInfoAdmin(ExtraButtonsMixin, DeleteAllAndResetMixin, admin.ModelAdmin):
     list_display = (
         'id',
         'date_placement',
@@ -49,15 +66,6 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     search_fields = ('num_item', 'num_transport')
     list_per_page = 10
     list_filter = (PDFFileFilter,)  # Добавляем фильтр
-
-    @button(
-        label='Загрузить данные',
-        change_form=True,
-        html_attrs={"class": 'btn-primary'}
-    )
-    def admin_load_data(self, request):
-        link_pdf_to_documents()
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     @button(
         label='Запустить планировщик',
@@ -82,31 +90,12 @@ class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
             return f'<a href="{obj.pdf_file.full_path}" download>Скачать PDF</a>'
         return 'Нет PDF файла'
 
-    download_pdf.allow_tags = True  # Позволяем HTML в поле
-    download_pdf.short_description = 'Скачать PDF файл'  # Заголовок столбца
-
 
 @admin.register(ERIPDataBase)
-class ERIPDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+class ERIPDataBaseAdmin(ExtraButtonsMixin, DeleteAllAndResetMixin, admin.ModelAdmin):
     list_display = [field.name for field in ERIPDataBase._meta.get_fields()]
     list_display_links = ('id', 'id_account',)
     search_fields = ('id_account',)
-
-    @button(
-        label='Удалить всё и сбросить автоинкремент',
-        change_form=True,
-        html_attrs={"class": 'btn-primary'}
-    )
-    def delete_all_and_reset(self, request):
-        ERIPDataBase.objects.all().delete()
-        self.message_user(request, "Все данные успешно удалены", level=messages.SUCCESS)
-
-        table_name = ERIPDataBase._meta.db_table
-        with connection.cursor() as cursor:
-            cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table_name}';")
-        self.message_user(request, "Автоинкремент успешно сброшен", level=messages.SUCCESS)
-
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     @button(
         label='Загрузить данные',
@@ -119,15 +108,7 @@ class ERIPDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-#
-# @admin.register(PDFDataBase)
-# class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
-#     list_display = [field.name for field in PDFDataBase._meta.fields]
-#     list_display_links = ('id',)
-#
-#
-
-class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+class PDFDataBaseAdmin(ExtraButtonsMixin, DeleteAllAndResetMixin, admin.ModelAdmin):
     form = PDFDataBaseAdminForm
 
     list_display = (
@@ -195,23 +176,6 @@ class PDFDataBaseAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     )
     def scan_and_load(self, request):
         scan_and_load_pdfs()
-        # link_pdf_to_documents()
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-    @button(
-        label='Удалить всё и сбросить автоинкремент',
-        change_form=True,
-        html_attrs={"class": 'btn-primary'}
-    )
-    def delete_all_and_reset(self, request):
-        PDFDataBase.objects.all().delete()
-        self.message_user(request, "Все данные успешно удалены", level=messages.SUCCESS)
-
-        table_name = PDFDataBase._meta.db_table
-        with connection.cursor() as cursor:
-            cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table_name}';")
-        self.message_user(request, "Автоинкремент успешно сброшен", level=messages.SUCCESS)
-
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
