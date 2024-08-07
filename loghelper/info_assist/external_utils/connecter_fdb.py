@@ -78,7 +78,7 @@ def remove_duplicates(element):
     return element
 
 
-@timeit
+# @timeit
 def get_data_fdb():
     dsn = f'{HOSTNAME}:{DATABASE_PATH}'
     con = fdb.connect(dsn=dsn, user=USERNAME, password=PASSWORD)

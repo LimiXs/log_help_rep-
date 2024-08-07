@@ -42,7 +42,7 @@ def scan_and_load_pdfs():
                     file = f"{os.path.splitext(file)[0]}_exist{extension}"
 
             new_file_path = os.path.join(new_directory, file)
-            print(new_file_path, doc_number)
+            # print(new_file_path, doc_number)
             if os.path.exists(new_file_path):
                 os.remove(new_file_path)
             shutil.move(file_path, new_directory)
