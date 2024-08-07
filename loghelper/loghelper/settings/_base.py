@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from django.core.exceptions import ImproperlyConfigured
+# from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -9,18 +9,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-
-def get_secret(setting):
-    try:
-        return os.getenv(setting)
-    except KeyError:
-        error_msg = f'Set the {setting} environment variable'
-        raise ImproperlyConfigured(error_msg)
-
-
 load_dotenv()
+setting = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[2]
+
+PDFS_BASE_CATALOG = (
+    os.getenv('PDFS_BASE_CATALOG_DEVELOPMENT')
+    if setting == 'development'
+    else os.getenv('PDFS_BASE_CATALOG_PRODUCTION')
+)
 SECRET_KEY = os.getenv('SECRET_KEY')
-  
+
 ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ['127.0.0.1']
 
@@ -123,3 +121,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'users:login'
+
+# def get_secret(setting):
+#     try:
+#         return os.getenv(setting)
+#     except KeyError:
+#         error_msg = f'Set the {setting} environment variable'
+#         raise ImproperlyConfigured(error_msg)

@@ -1,6 +1,6 @@
 {% load static %}
 
-{% if record.pdf_blob %}
+{% if record.pdf_file %}
     <a href="{% url 'download_pdf' record.pk %}" class="btn-download">Скачать</a>
 {% else %}
     <span class="text-muted">-</span>

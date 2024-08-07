@@ -1,96 +1,34 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from django_apscheduler.jobstores import DjangoJobStore
-from django_apscheduler.models import DjangoJobExecution
-
-from .external_utils.file_manager import *
-from .external_utils.connecter_fdb import get_data_fdb
-from .external_utils.parser_pdf import *
-from .models import DocumentInfo, PDFDataBase
+from django_apscheduler.jobstores import DjangoJobStore, DjangoJob
+from django_apscheduler import util
+from .tasks import scan_and_load_pdfs, link_pdf_to_documents, upload_docs_db
 
 
-class Scheduler:
-    def __init__(self):
-        self.plan = None
-
-    def start_scheduler(self, *tasks):
-        if self.plan is None:
-            self.plan = BackgroundScheduler()
-            self.plan.add_jobstore(DjangoJobStore(), 'default')
-            for task in tasks:
-                self.plan.add_job(task['func'], 'interval', minutes=task['interval'])
-            self.plan.start()
-     
-     
-    @staticmethod
-    def stop_scheduler():
-        jobstore = DjangoJobStore()
-        jobs = jobstore.get_all_jobs()
-        for job in jobs:
-            jobstore.remove_job(job.id)
- 
-
-
-def upload_docs_db():
-    records = get_data_fdb()  
-    for record in records:
-        doc_obj = DocumentInfo.objects.filter(num_item=record[0])
-        if not doc_obj.exists():
-            DocumentInfo.objects.create(
-                date_placement=record[1],
-                num_item=record[0],
-                num_transport=record[3],
-                num_doc=record[4],
-                date_docs=record[7],
-                documents=record[6],
-                status=record[8],
-                num_nine=record[10],
-                num_td=record[11]
-            )
-        elif doc_obj.exists():
-            doc_obj.update(
-                status=record[8],
-                num_nine=record[10],
-                num_td=record[11]
-            )
-
-
-def match_pdfs_docs():
+def do_sequence_tasks():
+    scan_and_load_pdfs()
     upload_docs_db()
-    
-    directory = os.listdir(CATALOG_PDFS)
-    if len(directory) > 0:
-        for file in directory:
-            extension = os.path.splitext(file)[1]
-            file_path = os.path.join(CATALOG_PDFS, file)
-
-            doc_number = get_doc_number(file_path) if extension == PDF else None
-            if doc_number is None or extension != PDF:
-                new_directory = CATALOG_NOT_FOUND_FILES
-            else:
-                new_directory = CATALOG_DOWNLOAD_PDFS
-                download_path = os.path.join(CATALOG_DOWNLOAD_PDFS, file)
-                try:
-                    record = PDFDataBase(doc_number=doc_number, full_path=download_path, file_name=file)
-                    record.save()
-                except Exception as e:
-                    print(f"Ошибка при сохранении записи: {e}")
-
-            new_file_path = os.path.join(new_directory, file)
-            if os.path.exists(new_file_path):
-                os.remove(new_file_path)
-            shutil.move(file_path, new_directory)
-
-    pdf_data = PDFDataBase.objects.all()
-    for pdf in pdf_data:
-        doc_info = DocumentInfo.objects.filter(num_item=pdf.doc_number)
-        if doc_info.exists():
-            doc_info.update(path_doc=pdf.full_path)
-            doc_info_instance = doc_info.first()
-            with open(pdf.full_path, 'rb') as pdf_file:
-                doc_info_instance.pdf_blob = pdf_file.read()
-                doc_info_instance.save()
-
-            pdf.in_use = True
-            pdf.save()
+    link_pdf_to_documents()
 
 
+@util.close_old_connections
+def start_scheduler():
+    scheduler = BackgroundScheduler()
+    scheduler.add_jobstore(DjangoJobStore(), "default")
+
+    try:
+        # Добавьте задачу
+        scheduler.add_job(do_sequence_tasks, 'interval', minutes=5, id='scan_and_load_pdfs_0')
+        # Запустите планировщик
+        scheduler.start()
+        print("Scheduler started!")
+    except Exception as e:
+        print(f"Error starting scheduler: {e}")
+        if "Job 'scan_and_load_pdfs_0' already exists" in str(e):
+            print("Scheduler already running with job id 'scan_and_load_pdfs_0'.")
+
+
+def stop_scheduler():
+    job_store = DjangoJobStore()
+    jobs = job_store.get_all_jobs()
+    for job in jobs:
+        job_store.remove_job(job.id)

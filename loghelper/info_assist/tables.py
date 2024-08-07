@@ -23,7 +23,7 @@ class DocumentInfoTable(tables.Table):
         template_name='info_assist/download_button.html',
         verbose_name='Скачать',
         orderable=True,
-        order_by=('pdf_blob',)
+        order_by=('pdf_file',)
     )
 
     class Meta:
@@ -41,7 +41,7 @@ class DocumentInfoTable(tables.Table):
         )
         sequence = (
             'date_placement', 'num_item', 'num_transport', 'num_doc',
-            'date_docs', 'status', 'num_nine', 'num_td', 'download'
+            'date_docs', 'status', 'num_nine', 'num_td',
         )
         exclude = ('path_doc', 'documents', 'num_doc', 'date_docs')
         order_by = ('-date_placement',)

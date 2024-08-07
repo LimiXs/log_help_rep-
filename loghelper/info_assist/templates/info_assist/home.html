@@ -2,7 +2,15 @@
 
 {% block content %}
 <h1>Главная страница</h1>
+
 {% if extra_button %}
     <a href="{{ extra_button.url }}">{{ extra_button.label }}</a>
 {% endif %}
+
+{% if buttons %}
+    {% for button in buttons %}
+        <a href="{{ button.url }}">{{ button.label }}</a>
+    {% endfor %}
+{% endif %}
+
 {% endblock %}
