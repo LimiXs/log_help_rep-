@@ -8,3 +8,4 @@ django-admin
 */.idea/
 /manage.py
 .env
+loghelper/db.sqlite3

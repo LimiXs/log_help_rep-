@@ -51,7 +51,7 @@ class DeleteAllAndResetMixin:
 
 
 @admin.register(DocumentInfo)
-class DocumentInfoAdmin(ExtraButtonsMixin, DeleteAllAndResetMixin, admin.ModelAdmin):
+class DocumentInfoAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     list_display = (
         'id',
         'date_placement',
