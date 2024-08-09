@@ -122,9 +122,7 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'users:login'
 
-# def get_secret(setting):
-#     try:
-#         return os.getenv(setting)
-#     except KeyError:
-#         error_msg = f'Set the {setting} environment variable'
-#         raise ImproperlyConfigured(error_msg)
+SECURE_HSTS_SECONDS = 31536000  # Установите значение для продакшн-среды
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = False
+    
