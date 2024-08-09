@@ -17,7 +17,7 @@ def start_scheduler():
 
     try:
         # Добавьте задачу
-        scheduler.add_job(do_sequence_tasks, 'interval', minutes=15, id='scan_and_load_pdfs_0')
+        scheduler.add_job(do_sequence_tasks, 'interval', minutes=10, id='scan_and_load_pdfs_0')
         # Запустите планировщик
         scheduler.start()
         print("Scheduler started!")

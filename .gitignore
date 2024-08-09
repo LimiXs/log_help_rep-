@@ -9,3 +9,4 @@ django-admin
 /manage.py
 .env
 loghelper/db.sqlite3
+db.sqlite3
