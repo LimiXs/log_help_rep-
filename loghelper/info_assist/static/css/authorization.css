@@ -69,3 +69,16 @@
     background-color: #5a6268;
     border-color: #545b62;
 }
+
+.alert-container {
+    margin-bottom: 20px; /* Отступ между сообщениями и кнопками */
+}
+
+.btn-group {
+    margin-top: 15px; /* Отступ сверху, чтобы кнопки не прилегали к сообщениям */
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 10px; /* Отступы между сообщениями */
+}
