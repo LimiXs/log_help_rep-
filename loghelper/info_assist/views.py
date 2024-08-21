@@ -25,6 +25,8 @@ def button_action(request, action):
         elif action == 'scan_and_load':
             scan_and_load_pdfs()
             messages.success(request, "PDFs scanned and loaded successfully.")
+        elif action == 'test':
+            return redirect('test')
         else:
             messages.error(request, "Invalid action.")
     except Exception as e:

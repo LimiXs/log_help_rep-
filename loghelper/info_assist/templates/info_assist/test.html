@@ -1,12 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Test</title>
-	Test
-	{{result}}
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+    <h1>Тестирование CSS файлов</h1>
+
+    <div class="content">
+        <h2>Область контента</h2>
+        <p>Это пример текста в области контента. Проверьте, как применяются стили.</p>
+    </div>
+
+    <div class="search-form">
+        <h3>Форма поиска</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="search">Поиск:</label>
+                <input type="text" id="search" class="form-control" placeholder="Введите текст...">
+            </div>
+            <button type="submit" class="btn-primary">Поиск</button>
+        </div>
+    </div>
+
+    <div class="menu">
+        <ul>
+            <li><a href="#">Главная</a></li>
+            <li><a href="#">О нас</a></li>
+            <li><a href="#">Контакты</a></li>
+            <li class="last"><a href="#" class="login-button">Войти</a></li>
+        </ul>
+    </div>
+
+    <div class="pagination">
+        <ul>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+        </ul>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Заголовок 1</th>
+                <th>Заголовок 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Ячейка 1</td>
+                <td>Ячейка 2</td>
+            </tr>
+            <tr>
+                <td>Ячейка 3</td>
+                <td>Ячейка 4</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="alert-container">
+        <div class="alert alert-success">Успешное сообщение!</div>
+        <div class="alert alert-danger">Ошибка! Что-то пошло не так.</div>
+    </div>
+
+    <div class="form-container-auth">
+        <div class="form-content-auth">
+            <h3>Авторизация</h3>
+            <div class="form-group-auth">
+                <label class="form-label-auth" for="username">Имя пользователя:</label>
+                <input type="text" class="form-input-auth" id="username">
+            </div>
+            <div class="form-group-auth">
+                <label class="form-label-auth" for="password">Пароль:</label>
+                <input type="password" class="form-input-auth" id="password">
+            </div>
+            <div class="btn-group">
+                <button class="btn-primary">Войти</button>
+                <button class="btn-secondary">Зарегистрироваться</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
