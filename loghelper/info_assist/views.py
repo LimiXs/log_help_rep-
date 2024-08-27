@@ -1,39 +1,46 @@
 from django_tables2 import RequestConfig
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-from info_assist.forms import ExtraButtonsForm
+from info_assist.utils import menu
 from info_assist.models import ERIPDataBase, DocumentInfo
 from info_assist.tables import ERIPFilter, ERIPTable, DocumentInfoTable, DocumentInfoFilter
-from info_assist.utils import menu
+from info_assist.tasks import link_pdf_to_documents, upload_docs_db, scan_and_load_pdfs
 
+
+@login_required
+def button_action(request, action):
+    """
+    View function to handle different button actions.
+    """
+    try:
+        if action == 'link_pdf':
+            link_pdf_to_documents()
+            messages.success(request, "PDFs successfully linked to documents.")
+        elif action == 'upload_docs':
+            upload_docs_db()
+            messages.success(request, "Documents uploaded to database successfully.")
+        elif action == 'scan_and_load':
+            scan_and_load_pdfs()
+            messages.success(request, "PDFs scanned and loaded successfully.")
+        elif action == 'test':
+            return redirect('test')
+        else:
+            messages.error(request, "Invalid action.")
+    except Exception as e:
+        messages.error(request, f"An error occurred: {str(e)}")
+
+    return redirect('home')
 
 @login_required
 def home(request):
     """
     View function for home page of site.
     """
-    if request.user.is_authenticated:
-        buttons_form = ExtraButtonsForm(initial={
-            'button1': {'label': 'Кнопка 1', 'url': reverse('home')},
-            'button2': {'label': 'Кнопка 2', 'url': reverse('home')},
-            'button3': {'label': 'Кнопка 3', 'url': reverse('home')},
-        })
-        buttons = [
-            {'label': 'Кнопка 1', 'url': reverse('home')},
-            {'label': 'Кнопка 2', 'url': reverse('home')},
-            {'label': 'Кнопка 3', 'url': reverse('home')}
-        ]
-    else:
-        buttons_form = None
-        buttons = None
-
     context = {
-        'menu': menu,
-        'buttons_form': buttons_form,
-        'buttons': buttons
+        'menu': menu,  # Если у вас есть меню
     }
     return render(request, 'info_assist/home.html', context=context)
 

@@ -1,3 +1,4 @@
+# tables.py
 from django import forms
 from django_filters import FilterSet, CharFilter, DateFromToRangeFilter, DateFilter
 from .models import DocumentInfo, ERIPDataBase
@@ -45,6 +46,7 @@ class DocumentInfoTable(tables.Table):
         )
         exclude = ('path_doc', 'documents', 'num_doc', 'date_docs')
         order_by = ('-date_placement',)
+
 
 
 class DocumentInfoFilter(FilterSet):

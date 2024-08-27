@@ -1,16 +1,26 @@
+<!-- home.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 <h1>Главная страница</h1>
 
-{% if extra_button %}
-    <a href="{{ extra_button.url }}">{{ extra_button.label }}</a>
+<!-- Сообщения об успехе или ошибке -->
+{% if messages %}
+    <div class="alert-container" style="margin-bottom: 20px;">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
 
-{% if buttons %}
-    {% for button in buttons %}
-        <a href="{{ button.url }}">{{ button.label }}</a>
-    {% endfor %}
-{% endif %}
+<!-- Кнопки для выполнения задач -->
+<div class="btn-group" role="group" aria-label="Task Actions">
+    <a href="{% url 'button_action' 'link_pdf' %}" class="btn btn-primary">Связать PDF с документами</a>
+    <a href="{% url 'button_action' 'upload_docs' %}" class="btn btn-primary">Загрузить документы в базу</a>
+    <a href="{% url 'button_action' 'scan_and_load' %}" class="btn btn-primary">Сканировать и загрузить PDF</a>
+    <a href="{% url 'button_action' 'test' %}" class="btn btn-primary">Тест</a>
+</div>
 
 {% endblock %}
